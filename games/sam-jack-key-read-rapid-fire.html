@@ -81,7 +81,7 @@
 
     .hud{
       display:grid;
-      grid-template-columns:repeat(5,minmax(120px,1fr));
+      grid-template-columns:repeat(6,minmax(120px,1fr));
       gap:12px;
       margin-bottom:18px;
     }
@@ -361,13 +361,11 @@
       color:#ffd4dc;
     }
 
-    .hidden{display:none !important}
-
     @media (max-width:900px){
       .startgrid{grid-template-columns:1fr}
     }
 
-    @media (max-width:760px){
+    @media (max-width:860px){
       .hud{grid-template-columns:repeat(2,minmax(120px,1fr))}
       .ticketgrid{grid-template-columns:1fr}
     }
@@ -407,6 +405,10 @@
         <div class="hudlabel">Started</div>
         <div class="hudvalue" id="hudStarted">Not started</div>
       </div>
+      <div class="hudcard">
+        <div class="hudlabel">Finished</div>
+        <div class="hudvalue" id="hudFinished">Not finished</div>
+      </div>
     </div>
 
     <div class="panel">
@@ -414,19 +416,19 @@
         <strong>Build Goal:</strong> Train the exact Sam/Jack verbal triggers you use: identify the key fast, then attach the correct reaction.
       </div>
       <div class="panelbody">
-        <!-- START SCREEN -->
         <section class="screen active" id="startScreen">
           <div class="startgrid">
             <div class="card">
               <h2>How this game works</h2>
-              <p class="muted">Players read a football situation, identify the correct <strong>key read</strong> or <strong>reaction</strong>, and must finish with a <strong>100% no-miss run</strong> to earn a submit ticket.</p>
+              <p class="muted">Players read the situation, identify the correct <strong>key read</strong> or <strong>reaction</strong>, and must finish with a <strong>100% no-miss run</strong> to earn the submit ticket.</p>
 
               <div class="rules">
                 <div class="rule"><strong>Name entry required</strong> before the game begins.</div>
-                <div class="rule"><strong>Auto-submit on answer click.</strong> The game shows immediate correction and advances automatically.</div>
-                <div class="rule"><strong>No-miss run required.</strong> Any wrong answer breaks ticket eligibility for that run.</div>
-                <div class="rule"><strong>Submit ticket only appears</strong> if the player finishes 20/20 with 100% accuracy.</div>
-                <div class="rule"><strong>Live tracking:</strong> progress, accuracy, timer, start time, and finish time.</div>
+                <div class="rule"><strong>Auto-submit on answer click.</strong></div>
+                <div class="rule"><strong>Auto-advance</strong> after feedback.</div>
+                <div class="rule"><strong>100% no-miss run required</strong> for submit ticket.</div>
+                <div class="rule"><strong>Live tracking:</strong> start time, finish time, timer, accuracy, and progress.</div>
+                <div class="rule"><strong>Live class-card ready:</strong> hub updates after each run.</div>
               </div>
 
               <div class="field">
@@ -443,22 +445,20 @@
 
             <div class="card">
               <h3>What this game trains</h3>
-              <p class="small muted">This opening game focuses on your install language:</p>
               <div class="rules">
                 <div class="rule">Helmet key recognition: <strong>Down / Out / Pull / High Hat</strong></div>
                 <div class="rule">Run reaction language: <strong>Leverage Point / Box / Wrong Arm / Deucesback</strong></div>
-                <div class="rule">Zone Read language: <strong>Read Side / Make him give / Don’t chase the zone give</strong></div>
+                <div class="rule">Zone Read language: <strong>Read Side / Make him give / Do not be a hero and chase the zone give</strong></div>
                 <div class="rule">Coverage trigger: <strong>High Hat = coverage rules</strong></div>
               </div>
               <p class="tiny muted" style="margin-top:14px;">
-                Recommended file name:
+                File name:
                 <span class="mono">sam-jack-key-read-rapid-fire.html</span>
               </p>
             </div>
           </div>
         </section>
 
-        <!-- GAME SCREEN -->
         <section class="screen" id="gameScreen">
           <div class="qmeta">
             <div class="chip" id="questionTypeChip">Question Type</div>
@@ -479,7 +479,6 @@
           </div>
         </section>
 
-        <!-- END SCREEN -->
         <section class="screen" id="endScreen">
           <div class="ticket" id="ticketWrap"></div>
         </section>
@@ -492,18 +491,41 @@
     const TOTAL_QUESTIONS = 20;
     const HUB_PATH = "../index.html";
 
+    const HUB_GAME_SLUG = "sam-jack-key-read-rapid-fire";
+    const HUB_STORAGE_PREFIX = "sj_hub_game_";
+
+    function saveHubProgress(payload){
+      try{
+        const key = HUB_STORAGE_PREFIX + HUB_GAME_SLUG;
+        const existing = JSON.parse(localStorage.getItem(key) || "{}");
+
+        const merged = {
+          gameTitle: GAME_TITLE,
+          status: payload.status ?? existing.status ?? "Ready",
+          bestAccuracy: Math.max(
+            typeof existing.bestAccuracy === "number" ? existing.bestAccuracy : 0,
+            typeof payload.bestAccuracy === "number" ? payload.bestAccuracy : 0
+          ),
+          perfectRun: Boolean(existing.perfectRun || payload.perfectRun),
+          lastPlayed: payload.lastPlayed || new Date().toISOString(),
+          startedAt: payload.startedAt || existing.startedAt || null,
+          finishedAt: payload.finishedAt || existing.finishedAt || null,
+          studentName: payload.studentName || existing.studentName || ""
+        };
+
+        localStorage.setItem(key, JSON.stringify(merged));
+      } catch(e){
+        console.warn("Hub progress save failed.", e);
+      }
+    }
+
     const questionBank = [
       {
         type: "Key Read",
         category: "Helmet Key",
         prompt: "What is the correct key read?",
         scenario: "At the snap, your key’s helmet and shoulders move inside. You immediately snap your eyes across the line to see if a kick-out is coming.",
-        choices: [
-          "Down",
-          "Out",
-          "Pull",
-          "High Hat"
-        ],
+        choices: ["Down","Out","Pull","High Hat"],
         correct: "Down",
         explain: "Inside movement by the key is a Down read. Your first reaction is to get to your Leverage Point and check for a puller or kick-out."
       },
@@ -540,12 +562,7 @@
         category: "Helmet Key",
         prompt: "What is the correct key read?",
         scenario: "The key shows a pass set. Helmet rises, body posture comes up, and there is no run demeanor.",
-        choices: [
-          "High Hat",
-          "Down",
-          "Out",
-          "Pull"
-        ],
+        choices: ["High Hat","Down","Out","Pull"],
         correct: "High Hat",
         explain: "A High Hat by the key triggers pass recognition and immediate engagement in the called coverage or pass-rush rule."
       },
@@ -568,12 +585,7 @@
         category: "Helmet Key",
         prompt: "What is the correct key read?",
         scenario: "Your key pulls away from you. You step to your leverage point and square to the QB for zone-read or cutback responsibility.",
-        choices: [
-          "Pull Away",
-          "High Hat",
-          "Out",
-          "Base"
-        ],
+        choices: ["Pull Away","High Hat","Out","Base"],
         correct: "Pull Away",
         explain: "Key Pull Away is treated like Down with no puller coming to you. You continue your rule and square for read/cutback."
       },
@@ -638,12 +650,7 @@
         category: "Outside Hat",
         prompt: "What key best fits this picture?",
         scenario: "The key’s outside hat and numbers widen. The surface is stretching and your path must adjust to stay outside-in on the ball.",
-        choices: [
-          "Out",
-          "High Hat",
-          "Pull",
-          "Down"
-        ],
+        choices: ["Out","High Hat","Pull","Down"],
         correct: "Out",
         explain: "When outside hat and numbers move wide, that is your Out / outside-zone style read."
       },
@@ -788,6 +795,7 @@
     const hudAccuracy = document.getElementById("hudAccuracy");
     const hudTimer = document.getElementById("hudTimer");
     const hudStarted = document.getElementById("hudStarted");
+    const hudFinished = document.getElementById("hudFinished");
 
     const questionTypeChip = document.getElementById("questionTypeChip");
     const questionCategoryChip = document.getElementById("questionCategoryChip");
@@ -851,6 +859,7 @@
       hudAccuracy.textContent = `${acc}%`;
       hudTimer.textContent = formatClock(getElapsedSeconds());
       hudStarted.textContent = startedAt ? formatDateTime(startedAt) : "Not started";
+      hudFinished.textContent = finishedAt ? formatDateTime(finishedAt) : "Not finished";
       noMissChip.textContent = wrongCount === 0 ? "No-Miss Run Alive" : "No-Miss Run Broken";
       noMissChip.style.borderColor = wrongCount === 0 ? "rgba(43,213,118,.45)" : "rgba(255,92,122,.45)";
       noMissChip.style.background = wrongCount === 0 ? "rgba(43,213,118,.16)" : "rgba(255,92,122,.16)";
@@ -875,13 +884,10 @@
 
     function buildQuestions(){
       const selected = shuffleArray(questionBank).slice(0, TOTAL_QUESTIONS);
-      gameQuestions = selected.map(q => {
-        const shuffledChoices = shuffleArray(q.choices);
-        return {
-          ...q,
-          shuffledChoices
-        };
-      });
+      gameQuestions = selected.map(q => ({
+        ...q,
+        shuffledChoices: shuffleArray(q.choices)
+      }));
     }
 
     function resetState(fullResetName = false){
@@ -925,6 +931,16 @@
       updateHud();
       startTimer();
       showScreen(gameScreen);
+
+      saveHubProgress({
+        status: "In Progress",
+        bestAccuracy: 0,
+        perfectRun: false,
+        lastPlayed: new Date().toISOString(),
+        startedAt,
+        studentName
+      });
+
       renderQuestion();
     }
 
@@ -989,7 +1005,7 @@
           <div class="headline">Incorrect</div>
           <div><strong>Correct answer:</strong> ${q.correct}</div>
           <div style="margin-top:8px;">${q.explain}</div>
-          <div style="margin-top:8px;"><strong>No-Miss Run Status:</strong> This run can still be completed for practice, but the submit ticket is no longer available. Restart for a perfect run.</div>
+          <div style="margin-top:8px;"><strong>No-Miss Run Status:</strong> This run can still be finished for practice, but the submit ticket is gone. Restart for a perfect run.</div>
         `;
       }
 
@@ -1013,6 +1029,16 @@
       const elapsed = formatClock(getElapsedSeconds());
       const passedPerfect = wrongCount === 0 && correctCount === TOTAL_QUESTIONS;
       const accuracy = Math.round((correctCount / Math.max(1, correctCount + wrongCount)) * 100);
+
+      saveHubProgress({
+        status: passedPerfect ? "Mastered" : "Played",
+        bestAccuracy: accuracy,
+        perfectRun: passedPerfect,
+        lastPlayed: new Date().toISOString(),
+        startedAt,
+        finishedAt,
+        studentName
+      });
 
       if(passedPerfect){
         ticketWrap.innerHTML = `
@@ -1067,7 +1093,7 @@
           <div class="ticketfail">
             <div class="failbadge">Ticket Not Earned</div>
             <h2 style="margin:0 0 8px 0;">Run Complete</h2>
-            <p class="muted" style="margin:0 0 12px 0;">The student finished the game, but a perfect no-miss run is required for the submit ticket.</p>
+            <p class="muted" style="margin:0 0 12px 0;">A perfect no-miss run is required for the submit ticket.</p>
 
             <div class="ticketgrid">
               <div class="ticketitem">
@@ -1128,6 +1154,16 @@
       updateHud();
       startTimer();
       showScreen(gameScreen);
+
+      saveHubProgress({
+        status: "In Progress",
+        bestAccuracy: 0,
+        perfectRun: false,
+        lastPlayed: new Date().toISOString(),
+        startedAt,
+        studentName
+      });
+
       renderQuestion();
     }
 
