@@ -519,230 +519,48 @@
       }
     }
 
-    const questionBank = [
-{
-type:"Key Read",
-category:"Helmet Key",
-prompt:"What is the correct key read?",
-scenario:"At the snap your key works inside immediately and you gain ground toward the leverage point while checking for second level action.",
-choices:[
-"Down",
-"Out",
-"Pull",
-"High Hat"
-],
-correct:"Down"
-},
+    const questionBank=[
 
-{
-type:"Reaction",
-category:"Down with Puller",
-prompt:"On a Down read with a puller coming, what is the first coaching answer?",
-scenario:"You identify the down movement and recognize a puller entering the picture from the backside.",
-choices:[
-"Continue to the Leverage Point outside the down block",
-"Flatten immediately down the LOS and beat the puller inside",
-"Sit and wait for the kick-out to reach you before reacting",
-"Squeeze down the line and chase the puller into the gap"
-],
-correct:"Continue to the Leverage Point outside the down block"
-},
+{type:"Key Read",category:"Helmet Key",prompt:"What is the correct key read?",scenario:"Your key works immediately inside and you gain ground while locating the next threat.",choices:["Down","Out","Pull","High Hat"],correct:"Down"},
 
-{
-type:"Reaction",
-category:"Edge Setting",
-prompt:"What is the coaching point once you arrive at the Leverage Point off the ball?",
-scenario:"You are off the ball and power is coming toward you with the kick-out arriving.",
-choices:[
-"Remain square, bend hips and knees, tuck bent arm against torso, outside foot slightly back and wider than shoulders, push into the kick-out and strike with the inside foot up",
-"Stay square but absorb the kick-out deep and wait for the runner to declare before reacting",
-"Turn shoulders slightly and wrong-arm the kick-out to spill the ball inside",
-"Attack downhill early and cross the kick-out path before the block arrives"
-],
-correct:"Remain square, bend hips and knees, tuck bent arm against torso, outside foot slightly back and wider than shoulders, push into the kick-out and strike with the inside foot up"
-},
+{type:"Reaction",category:"Down with Puller",prompt:"On a Down read with a puller appearing, what is your first rule?",scenario:"You recognize down movement and a second level blocker is entering the picture.",choices:["Continue to the Leverage Point outside the down block","Flatten down the LOS and beat the puller inside","Sit and wait for the kick-out to arrive","Chase the puller across the formation"],correct:"Continue to the Leverage Point outside the down block"},
 
-{
-type:"Key Read",
-category:"Helmet Key",
-prompt:"What key is identified here?",
-scenario:"Your key comes off the ball with pass posture and elevated pad level rather than run demeanor.",
-choices:[
-"High Hat",
-"Down",
-"Out",
-"Pull"
-],
-correct:"High Hat"
-},
+{type:"Reaction",category:"Edge Setting",prompt:"What is the coaching point once you arrive at the Leverage Point off the ball?",scenario:"You are off the ball and power is coming toward you with the kick-out arriving.",choices:["Remain square, bend hips and knees, tuck bent arm against torso, outside foot slightly back and wider than shoulders, push into the kick-out and strike with the inside foot up","Stay square but absorb the kick-out deep and wait for the runner to declare","Turn shoulders and wrong-arm the kick-out","Attack downhill early and cross the kick-out path"],correct:"Remain square, bend hips and knees, tuck bent arm against torso, outside foot slightly back and wider than shoulders, push into the kick-out and strike with the inside foot up"},
 
-{
-type:"Reaction",
-category:"Coverage Trigger",
-prompt:"What is the correct reaction to this read?",
-scenario:"You are aligned off the ball and get immediate pass demeanor from your key.",
-choices:[
-"Immediately engage fully in coverage responsibility",
-"Trigger downhill before expanding into coverage",
-"Attack the nearest gap to disrupt timing",
-"Sit at the line until the quarterback commits"
-],
-correct:"Immediately engage fully in coverage responsibility"
-},
+{type:"Key Read",category:"Helmet Key",prompt:"What key read is identified here?",scenario:"Your key rises out of his stance with pass posture instead of run demeanor.",choices:["High Hat","Pull","Out","Down"],correct:"High Hat"},
 
-{
-type:"Key Read",
-category:"Helmet Key",
-prompt:"What read best fits this situation?",
-scenario:"Your key works away from you and no immediate puller appears to your side.",
-choices:[
-"Pull Away",
-"Out",
-"High Hat",
-"Base"
-],
-correct:"Pull Away"
-},
+{type:"Reaction",category:"Coverage Trigger",prompt:"What is the correct reaction to this read?",scenario:"You are aligned off the ball and recognize immediate pass demeanor from your key.",choices:["Immediately engage in your coverage responsibility","Trigger downhill first then expand","Attack the nearest gap","Wait until the quarterback throws"],correct:"Immediately engage in your coverage responsibility"},
 
-{
-type:"Reaction",
-category:"Zone Read",
-prompt:"What must the read-side defender do?",
-scenario:"There is no kick-out coming and the quarterback is reading your reaction.",
-choices:[
-"Maintain outside leverage on the QB and make him give the ball",
-"Attack the mesh and tackle whichever player declares first",
-"Collapse inside to eliminate the inside gap",
-"Chase the running back immediately"
-],
-correct:"Maintain outside leverage on the QB and make him give the ball"
-},
+{type:"Key Read",category:"Helmet Key",prompt:"What read fits this picture?",scenario:"Your key moves away from your side and no immediate second level blocker shows to you.",choices:["Pull Away","Out","High Hat","Base"],correct:"Pull Away"},
 
-{
-type:"Reaction",
-category:"Zone Read",
-prompt:"Which coaching phrase applies here?",
-scenario:"A player wants to abandon responsibility and run the give.",
-choices:[
-"Do not be a hero and chase the zone give",
-"Take the give if you think you can make the play",
-"Attack the first player with the ball look",
-"Commit early to whichever path opens first"
-],
-correct:"Do not be a hero and chase the zone give"
-},
+{type:"Reaction",category:"Zone Read",prompt:"What must the read-side defender do?",scenario:"There is no kick-out coming and the quarterback is reading your reaction.",choices:["Maintain outside leverage on the QB and make him give the ball","Attack the mesh immediately","Collapse inside to eliminate the inside gap","Chase the running back"],correct:"Maintain outside leverage on the QB and make him give the ball"},
 
-{
-type:"Reaction",
-category:"Ball Away",
-prompt:"What is Sam's shuffle rule on ball away?",
-scenario:"The play flows away from you and interior support still exists inside.",
-choices:[
-"Square shoulders and slow shuffle from outside toward B gap strong",
-"Open hips and run over the top immediately",
-"Insert vertically into the nearest open window",
-"Collapse fully inside toward the line"
-],
-correct:"Square shoulders and slow shuffle from outside toward B gap strong"
-},
+{type:"Reaction",category:"Zone Read",prompt:"Which coaching phrase applies here?",scenario:"A player wants to abandon his responsibility and chase the running back.",choices:["Do not be a hero and chase the zone give","Take the give if you think you can beat it","Attack whichever player shows first","Guess the ball and react late"],correct:"Do not be a hero and chase the zone give"},
 
-{
-type:"Reaction",
-category:"Ball Away",
-prompt:"What is Jack's shuffle rule on ball away?",
-scenario:"The ball flows away and you must stay connected to the fit.",
-choices:[
-"Slow shuffle and keep leverage toward A gap weak",
-"Sprint directly to the ball path",
-"Turn shoulders and chase outside",
-"Collapse immediately inside"
-],
-correct:"Slow shuffle and keep leverage toward A gap weak"
-},
+{type:"Reaction",category:"Ball Away",prompt:"What is Sam's shuffle rule on ball away?",scenario:"The play flows away but interior support remains inside of you.",choices:["Square shoulders and slow shuffle from outside toward B gap strong","Open hips and run over the top immediately","Insert vertically inside","Collapse directly to the LOS"],correct:"Square shoulders and slow shuffle from outside toward B gap strong"},
 
-{
-type:"Key Read",
-category:"Helmet Key",
-prompt:"What read is this?",
-scenario:"The surface widens and your leverage must adjust to protect the perimeter.",
-choices:[
-"Out",
-"High Hat",
-"Pull",
-"Down"
-],
-correct:"Out"
-},
+{type:"Reaction",category:"Ball Away",prompt:"What is Jack's shuffle rule on ball away?",scenario:"The play flows away and you must maintain backside responsibility.",choices:["Slow shuffle and keep leverage toward A gap weak","Sprint directly to the ball","Turn shoulders and chase outside","Collapse fully inside"],correct:"Slow shuffle and keep leverage toward A gap weak"},
 
-{
-type:"Reaction",
-category:"Outside Zone",
-prompt:"What is the correct response?",
-scenario:"The offense stretches your side horizontally.",
-choices:[
-"Adjust course to the LOS and set a hard edge with outside leverage",
-"Gain extra depth and wait for the runner to commit",
-"Cross the blocker's face to spill the ball",
-"Freeze and let pursuit declare first"
-],
-correct:"Adjust course to the LOS and set a hard edge with outside leverage"
-},
+{type:"Key Read",category:"Helmet Key",prompt:"What read does this movement indicate?",scenario:"The surface widens and your leverage must adjust to the perimeter.",choices:["Out","High Hat","Pull","Down"],correct:"Out"},
 
-{
-type:"Reaction",
-category:"Base Block",
-prompt:"What technique applies against a base block?",
-scenario:"The blocker comes directly at you trying to move you off the edge.",
-choices:[
-"Set hard edge, extend inside arm, keep outside arm free",
-"Catch the block deep and wait for the ball",
-"Turn shoulders to slip underneath",
-"Strike evenly and square chest to chest"
-],
-correct:"Set hard edge, extend inside arm, keep outside arm free"
-},
+{type:"Reaction",category:"Outside Zone",prompt:"What is the correct response to this action?",scenario:"The offense stretches your side horizontally.",choices:["Adjust course to the LOS and set a hard edge with outside leverage","Gain depth and wait for the runner","Cross the blocker's face to spill the run","Freeze and read the backfield"],correct:"Adjust course to the LOS and set a hard edge with outside leverage"},
 
-{
-type:"Reaction",
-category:"On the LOS",
-prompt:"What is the spill rule on the line of scrimmage?",
-scenario:"You are on the ball with down block and kick-out arriving.",
-choices:[
-"Throw wrong arm and back hip through the kick-out",
-"Set the edge and box the ball wider",
-"Shuffle and wait for the runner",
-"Strike both hands and hold the point"
-],
-correct:"Throw wrong arm and back hip through the kick-out"
-},
+{type:"Reaction",category:"Base Block",prompt:"What technique applies against a base block?",scenario:"The blocker comes directly at you and attempts to move the edge.",choices:["Set hard edge extend inside arm keep outside arm free","Catch the block deep and wait","Turn shoulders and slip inside","Strike evenly and square chest to chest"],correct:"Set hard edge extend inside arm keep outside arm free"},
 
-{
-type:"Reaction",
-category:"Pass Rush",
-prompt:"What is the outside rusher rule?",
-scenario:"The tackle oversets and the inside lane opens briefly.",
-choices:[
-"Outside rushers are contain rush always",
-"Take the inside lane if it opens",
-"Cross the quarterback face if you can flatten",
-"Convert inside immediately once the blocker oversets"
-],
-correct:"Outside rushers are contain rush always"
-},
+{type:"Reaction",category:"On the LOS",prompt:"What is the spill rule when you are on the line of scrimmage?",scenario:"You are on the ball with down block and kick-out arriving.",choices:["Throw wrong arm and back hip through the kick-out","Set the edge and box the run wider","Shuffle and wait for the runner","Strike both hands and anchor"],correct:"Throw wrong arm and back hip through the kick-out"},
 
-{
-type:"Reaction",
-category:"Pass Rush",
-prompt:"What is the depth rule near the quarterback?",
-scenario:"You are reaching quarterback depth during the rush.",
-choices:[
-"Drive the blocker into the QB and never rush past QB depth",
-"Run the arc past the quarterback then redirect",
-"Stop and disengage at QB depth",
-"Flatten behind the quarterback"
-],
-correct:"Drive the blocker into the QB and never rush past QB depth"
-}
+{type:"Reaction",category:"Pass Rush",prompt:"What is the outside rusher rule?",scenario:"The tackle oversets and the inside lane appears tempting.",choices:["Outside rushers are contain rush always","Take the inside lane immediately","Cross the quarterback face","Convert inside once the blocker oversets"],correct:"Outside rushers are contain rush always"},
+
+{type:"Reaction",category:"Pass Rush",prompt:"What is the depth rule near the quarterback?",scenario:"You are reaching quarterback depth in your rush.",choices:["Drive the blocker into the QB and never rush past QB depth","Run the arc past the QB then redirect","Stop and disengage at QB depth","Flatten behind the quarterback"],correct:"Drive the blocker into the QB and never rush past QB depth"},
+
+{type:"Recognition",category:"Puller",prompt:"What key movement signals pull action?",scenario:"Your key leaves his original position and travels across the formation.",choices:["Pull","High Hat","Down","Out"],correct:"Pull"},
+
+{type:"Reaction",category:"Pull Read",prompt:"What is your response when the key pulls toward you?",scenario:"You recognize pull action entering your side of the formation.",choices:["Continue to the leverage point and prepare for kick-out","Collapse immediately inside","Run past the puller and chase the ball","Stop and wait for the runner"],correct:"Continue to the leverage point and prepare for kick-out"},
+
+{type:"Recognition",category:"Run vs Pass",prompt:"Which indicator most clearly signals pass?",scenario:"You must quickly determine whether the play is run or pass.",choices:["High Hat posture by the key","Guard stepping flat","Backfield mesh action","Running back depth"],correct:"High Hat posture by the key"},
+
+{type:"Reaction",category:"Contain",prompt:"Why is contain critical for the outside rusher?",scenario:"The quarterback begins to escape the pocket toward the edge.",choices:["To prevent the quarterback from escaping outside","To force the quarterback to throw immediately","To create a lane for the interior rush","To collapse the pocket vertically"],correct:"To prevent the quarterback from escaping outside"}
+
 ];
 
     const startScreen = document.getElementById("startScreen");
