@@ -447,7 +447,7 @@
               <h3>What this game trains</h3>
               <div class="rules">
                 <div class="rule">Helmet key recognition: <strong>Down / Out / Pull / High Hat</strong></div>
-                <div class="rule">Run reaction language: <strong>Leverage Point / Box / Wrong Arm / Deucesback</strong></div>
+                <div class="rule">Run reaction language: <strong>Leverage Point / Box / Wrong Arm / Deuces</strong></div>
                 <div class="rule">Zone Read language: <strong>Read Side / Make him give / Do not be a hero and chase the zone give</strong></div>
                 <div class="rule">Coverage trigger: <strong>High Hat = coverage rules</strong></div>
               </div>
@@ -488,7 +488,7 @@
 
   <script>
     const GAME_TITLE = "Sam & Jack Key Read Rapid Fire";
-    const TOTAL_QUESTIONS = 20;
+    const TOTAL_QUESTIONS = 22;
     const HUB_PATH = "../index.html";
 
     const HUB_GAME_SLUG = "sam-jack-key-read-rapid-fire";
@@ -547,7 +547,7 @@
 
 {type:"Reaction",category:"Base Block",prompt:"What technique applies against a base block?",scenario:"The blocker comes directly at you and attempts to move the edge.",choices:["Set hard edge extend inside arm keep outside arm free","Catch the block deep and wait","Turn shoulders and slip inside","Strike evenly and square chest to chest"],correct:"Set hard edge extend inside arm keep outside arm free"},
 
-{type:"Reaction",category:"On the LOS",prompt:"What is the spill rule when you are on the line of scrimmage?",scenario:"You are on the ball with down block and kick-out arriving.",choices:["Throw wrong arm and back hip through the kick-out","Set the edge and box the run wider","Shuffle and wait for the runner","Strike both hands and anchor"],correct:"Throw wrong arm and back hip through the kick-out"},
+{type:"Reaction",category:"On the LOS",prompt:"On the LOS with a Down read and a puller coming, what is your spill rule?",scenario:"You are on the ball. Down block happens, a kick-out is coming, and the scrape LB is vacating.",choices:["Throw the wrong arm and back hip through the kick-out to close the gap","Box everything and bounce backward","Run outside the block and widen the gap","Sit and wait for the second puller"],correct:"Throw the wrong arm and back hip through the kick-out to close the gap"},
 
 {type:"Reaction",category:"Pass Rush",prompt:"What is the outside rusher rule?",scenario:"The tackle oversets and the inside lane appears tempting.",choices:["Outside rushers are contain rush always","Take the inside lane immediately","Cross the quarterback face","Convert inside once the blocker oversets"],correct:"Outside rushers are contain rush always"},
 
@@ -559,7 +559,13 @@
 
 {type:"Recognition",category:"Run vs Pass",prompt:"Which indicator most clearly signals pass?",scenario:"You must quickly determine whether the play is run or pass.",choices:["High Hat posture by the key","Guard stepping flat","Backfield mesh action","Running back depth"],correct:"High Hat posture by the key"},
 
-{type:"Reaction",category:"Contain",prompt:"Why is contain critical for the outside rusher?",scenario:"The quarterback begins to escape the pocket toward the edge.",choices:["To prevent the quarterback from escaping outside","To force the quarterback to throw immediately","To create a lane for the interior rush","To collapse the pocket vertically"],correct:"To prevent the quarterback from escaping outside"}
+{type:"Reaction",category:"Contain",prompt:"Why is contain critical for the outside rusher?",scenario:"The quarterback begins to escape the pocket toward the edge.",choices:["To prevent the quarterback from escaping outside","To force the quarterback to throw immediately","To create a lane for the interior rush","To collapse the pocket vertically"],correct:"To prevent the quarterback from escaping outside"},
+
+/* --- Two questions you asked to restore --- */
+
+{type:"Reaction",category:"Coverage Rules",prompt:"Against a single wideout in Solo technique, what is the coaching phrase?",scenario:"You are aligned for Solo versus a single WR and get High Hat.",choices:["Immediate hard flat no matter what","Take the first inside move and never sink","Open to #1, clear the slant, then square and sink to curl/comeback window","Turn and run to the post"],correct:"Open to #1, clear the slant, then square and sink to curl/comeback window"},
+
+{type:"Reaction",category:"Edge Setting",prompt:"At the leverage point when power arrives, what is the correct box technique?",scenario:"You arrive square and the kick-out block is approaching your leverage point.",choices:["Strike the kick-out square and force the run back inside","Wrong arm and spill the run immediately","Give ground and catch the block deeper","Slip the kick-out and run underneath"],correct:"Strike the kick-out square and force the run back inside"}
 
 ];
 
