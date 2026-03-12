@@ -3,1182 +3,495 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Sam & Jack Key Read Rapid Fire</title>
-  <link rel="stylesheet" href="../styles.css" />
-
-  <style>
-    :root{
-      --bg:#0b1220;
-      --panel:#111a2f;
-      --panel2:#0f1730;
-      --card:#111a2e;
-      --text:#e7eefc;
-      --muted:#a8b4cf;
-      --line:rgba(255,255,255,.12);
-      --good:#2bd576;
-      --bad:#ff5c7a;
-      --warn:#ffd166;
-      --accent:#7aa2ff;
-      --chip:rgba(122,162,255,.14);
-      --chipLine:rgba(122,162,255,.28);
-      --shadow:0 18px 55px rgba(0,0,0,.40);
-      --radius:18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    }
-
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:linear-gradient(180deg,#0b1220,#070b14);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    button,input{font:inherit}
-
-    .wrap{
-      width:min(1100px,92vw);
-      margin:24px auto 40px;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom:18px;
-      flex-wrap:wrap;
-    }
-
-    .titleblock h1{
-      margin:0;
-      font-size:clamp(1.4rem,2.8vw,2.2rem);
-      line-height:1.1;
-      letter-spacing:.2px;
-    }
-
-    .titleblock .sub{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:.98rem;
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .btn{
-      border:1px solid var(--line);
-      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-      color:var(--text);
-      padding:10px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      box-shadow:var(--shadow);
-      transition:transform .08s ease, opacity .2s ease, border-color .2s ease;
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-    .btn.primary{border-color:rgba(122,162,255,.5);background:linear-gradient(180deg,rgba(122,162,255,.20),rgba(122,162,255,.09))}
-    .btn.good{border-color:rgba(43,213,118,.45);background:linear-gradient(180deg,rgba(43,213,118,.16),rgba(43,213,118,.06))}
-    .btn.bad{border-color:rgba(255,92,122,.45);background:linear-gradient(180deg,rgba(255,92,122,.16),rgba(255,92,122,.06))}
-
-    .hud{
-      display:grid;
-      grid-template-columns:repeat(5,minmax(120px,1fr));
-      gap:12px;
-      margin-bottom:18px;
-    }
-
-    .hudcard{
-      background:linear-gradient(180deg,var(--panel),var(--panel2));
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:12px 14px;
-      box-shadow:var(--shadow);
-      min-height:84px;
-    }
-
-    .hudlabel{
-      color:var(--muted);
-      font-size:.82rem;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:8px;
-    }
-
-    .hudvalue{
-      font-weight:800;
-      font-size:1.05rem;
-      line-height:1.2;
-      word-break:break-word;
-    }
-
-    .panel{
-      background:linear-gradient(180deg,var(--panel),var(--panel2));
-      border:1px solid var(--line);
-      border-radius:20px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    .panelhead{
-      padding:18px 20px;
-      border-bottom:1px solid var(--line);
-      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
-    }
-
-    .panelbody{
-      padding:20px;
-    }
-
-    .screen{display:none}
-    .screen.active{display:block}
-
-    .startgrid{
-      display:grid;
-      grid-template-columns:1.2fr .8fr;
-      gap:18px;
-    }
-
-    .card{
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-    }
-
-    .card h2,.card h3{
-      margin:0 0 10px 0;
-      line-height:1.15;
-    }
-
-    .muted{color:var(--muted)}
-    .small{font-size:.94rem}
-    .tiny{font-size:.85rem}
-    .mono{font-family:var(--mono)}
-
-    .rules{
-      display:grid;
-      gap:10px;
-      margin-top:10px;
-    }
-
-    .rule{
-      padding:10px 12px;
-      border:1px solid var(--chipLine);
-      background:var(--chip);
-      border-radius:12px;
-    }
-
-    .field{
-      display:grid;
-      gap:8px;
-      margin-top:14px;
-    }
-
-    .field label{
-      font-weight:700;
-      color:var(--muted);
-    }
-
-    .field input{
-      width:100%;
-      padding:14px 14px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:#0d1529;
-      color:var(--text);
-      outline:none;
-    }
-    .field input:focus{border-color:var(--accent)}
-
-    .statusline{
-      margin-top:12px;
-      min-height:22px;
-      color:var(--warn);
-      font-weight:700;
-    }
-
-    .qmeta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-bottom:16px;
-    }
-
-    .chip{
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid var(--chipLine);
-      background:var(--chip);
-      color:#d9e6ff;
-      font-size:.88rem;
-      font-weight:700;
-    }
-
-    .prompt{
-      font-size:1.2rem;
-      font-weight:800;
-      line-height:1.35;
-      margin:0 0 14px 0;
-    }
-
-    .scenario{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
-      border-radius:16px;
-      padding:16px;
-      margin-bottom:16px;
-    }
-
-    .scenario p{
-      margin:0 0 10px 0;
-      line-height:1.5;
-    }
-
-    .answers{
-      display:grid;
-      gap:12px;
-      margin-top:14px;
-    }
-
-    .choice{
-      text-align:left;
-      width:100%;
-      padding:14px 15px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
-      color:var(--text);
-      cursor:pointer;
-      transition:transform .08s ease, border-color .15s ease, background .15s ease;
-      line-height:1.35;
-      font-weight:700;
-    }
-    .choice:hover{transform:translateY(-1px);border-color:rgba(122,162,255,.45)}
-    .choice.correct{
-      border-color:rgba(43,213,118,.55);
-      background:rgba(43,213,118,.12);
-    }
-    .choice.wrong{
-      border-color:rgba(255,92,122,.55);
-      background:rgba(255,92,122,.12);
-    }
-    .choice.locked{cursor:default}
-
-    .feedback{
-      margin-top:16px;
-      min-height:78px;
-      border-radius:14px;
-      padding:14px 15px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.03);
-    }
-    .feedback.good{
-      border-color:rgba(43,213,118,.4);
-      background:rgba(43,213,118,.10);
-    }
-    .feedback.bad{
-      border-color:rgba(255,92,122,.4);
-      background:rgba(255,92,122,.10);
-    }
-
-    .feedback .headline{
-      font-weight:900;
-      margin-bottom:8px;
-    }
-
-    .ticket{
-      display:grid;
-      gap:14px;
-    }
-
-    .ticketbox{
-      border:1px solid rgba(43,213,118,.35);
-      background:linear-gradient(180deg,rgba(43,213,118,.12),rgba(43,213,118,.05));
-      border-radius:18px;
-      padding:18px;
-    }
-
-    .ticketfail{
-      border:1px solid rgba(255,92,122,.35);
-      background:linear-gradient(180deg,rgba(255,92,122,.12),rgba(255,92,122,.05));
-      border-radius:18px;
-      padding:18px;
-    }
-
-    .ticketgrid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(220px,1fr));
-      gap:12px;
-      margin-top:12px;
-    }
-
-    .ticketitem{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      background:rgba(255,255,255,.04);
-    }
-
-    .ticketitem .label{
-      color:var(--muted);
-      font-size:.82rem;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:6px;
-    }
-
-    .ticketitem .value{
-      font-weight:800;
-      line-height:1.35;
-      word-break:break-word;
-    }
-
-    .footerbtns{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-
-    .passbadge,.failbadge{
-      display:inline-block;
-      padding:8px 12px;
-      border-radius:999px;
-      font-weight:900;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-      margin-bottom:12px;
-    }
-
-    .passbadge{
-      background:rgba(43,213,118,.18);
-      border:1px solid rgba(43,213,118,.45);
-      color:#c8ffe0;
-    }
-
-    .failbadge{
-      background:rgba(255,92,122,.18);
-      border:1px solid rgba(255,92,122,.45);
-      color:#ffd4dc;
-    }
-
-    .hidden{display:none !important}
-
-    @media (max-width:900px){
-      .startgrid{grid-template-columns:1fr}
-    }
-
-    @media (max-width:760px){
-      .hud{grid-template-columns:repeat(2,minmax(120px,1fr))}
-      .ticketgrid{grid-template-columns:1fr}
-    }
-  </style>
+  <title>Sam & Jack Trainer Hub</title>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="titleblock">
-        <h1>Sam & Jack Key Read Rapid Fire</h1>
-        <div class="sub">Helmet Keys • Reaction Rules • Leverage Point • Box / Spill / Read Side</div>
+  <div class="hub-wrap">
+    <header class="hub-hero">
+      <div class="hero-copy">
+        <div class="hero-kicker">Perry Football • Defensive Install Hub</div>
+        <h1>Sam & Jack Trainer Hub</h1>
+        <p class="hero-sub">
+          Build player reaction speed using your install language: helmet keys, leverage point rules, edge setting, read-side discipline, coverage rules, run fits, and pass-rush integrity.
+        </p>
       </div>
-      <div class="actions">
-        <button class="btn" id="backBtn" type="button">← Back to Hub</button>
-        <button class="btn bad" id="restartTopBtn" type="button">Restart Game</button>
-      </div>
-    </div>
 
-    <div class="hud">
-      <div class="hudcard">
-        <div class="hudlabel">Student</div>
-        <div class="hudvalue" id="hudStudent">—</div>
+      <div class="hero-panel">
+        <div class="hero-stat">
+          <div class="hero-stat-label">Live Games</div>
+          <div class="hero-stat-value" id="builtGames">1</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Perfect Runs</div>
+          <div class="hero-stat-value" id="perfectRuns">0</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Last Activity</div>
+          <div class="hero-stat-value" id="lastActivity">None yet</div>
+        </div>
       </div>
-      <div class="hudcard">
-        <div class="hudlabel">Progress</div>
-        <div class="hudvalue" id="hudProgress">0 / 20</div>
-      </div>
-      <div class="hudcard">
-        <div class="hudlabel">Accuracy</div>
-        <div class="hudvalue" id="hudAccuracy">100%</div>
-      </div>
-      <div class="hudcard">
-        <div class="hudlabel">Timer</div>
-        <div class="hudvalue mono" id="hudTimer">00:00</div>
-      </div>
-      <div class="hudcard">
-        <div class="hudlabel">Started</div>
-        <div class="hudvalue" id="hudStarted">Not started</div>
-      </div>
-    </div>
+    </header>
 
-    <div class="panel">
-      <div class="panelhead">
-        <strong>Build Goal:</strong> Train the exact Sam/Jack verbal triggers you use: identify the key fast, then attach the correct reaction.
+    <section class="section-block">
+      <div class="section-title-row">
+        <h2>Sam & Jack Mastery Games</h2>
+        <div class="section-note">Live card data updates automatically after each run.</div>
       </div>
-      <div class="panelbody">
-        <!-- START SCREEN -->
-        <section class="screen active" id="startScreen">
-          <div class="startgrid">
-            <div class="card">
-              <h2>How this game works</h2>
-              <p class="muted">Players read a football situation, identify the correct <strong>key read</strong> or <strong>reaction</strong>, and must finish with a <strong>100% no-miss run</strong> to earn a submit ticket.</p>
 
-              <div class="rules">
-                <div class="rule"><strong>Name entry required</strong> before the game begins.</div>
-                <div class="rule"><strong>Auto-submit on answer click.</strong> The game shows immediate correction and advances automatically.</div>
-                <div class="rule"><strong>No-miss run required.</strong> Any wrong answer breaks ticket eligibility for that run.</div>
-                <div class="rule"><strong>Submit ticket only appears</strong> if the player finishes 20/20 with 100% accuracy.</div>
-                <div class="rule"><strong>Live tracking:</strong> progress, accuracy, timer, start time, and finish time.</div>
-              </div>
+      <div class="cards-grid" id="gameCards">
 
-              <div class="field">
-                <label for="studentName">Student Name</label>
-                <input id="studentName" type="text" maxlength="40" placeholder="Enter first and last name" autocomplete="name" />
-              </div>
-
-              <div class="statusline" id="startMsg"></div>
-
-              <div class="footerbtns">
-                <button class="btn primary" id="startBtn" type="button">Start Game</button>
-              </div>
+        <!-- GAME 1 -->
+        <article class="game-card live" data-game-slug="sam-jack-key-read-rapid-fire" data-built="true">
+          <div class="card-top">
+            <div>
+              <div class="card-kicker">Game 1</div>
+              <h3>Key Read Rapid Fire</h3>
             </div>
+            <span class="badge live-badge">LIVE</span>
+          </div>
 
-            <div class="card">
-              <h3>What this game trains</h3>
-              <p class="small muted">This opening game focuses on your install language:</p>
-              <div class="rules">
-                <div class="rule">Helmet key recognition: <strong>Down / Out / Pull / High Hat</strong></div>
-                <div class="rule">Run reaction language: <strong>Leverage Point / Box / Wrong Arm / Deucesback</strong></div>
-                <div class="rule">Zone Read language: <strong>Read Side / Make him give / Don’t chase the zone give</strong></div>
-                <div class="rule">Coverage trigger: <strong>High Hat = coverage rules</strong></div>
-              </div>
-              <p class="tiny muted" style="margin-top:14px;">
-                Recommended file name:
-                <span class="mono">sam-jack-key-read-rapid-fire.html</span>
-              </p>
+          <p class="card-desc">
+            Helmet keys, leverage point reactions, High Hat trigger, pull reads, Deuces, and read-side discipline.
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Status</div>
+              <div class="mini-value js-status">Ready</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Best Accuracy</div>
+              <div class="mini-value js-accuracy">—</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Perfect Run</div>
+              <div class="mini-value js-perfect">No</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Last Played</div>
+              <div class="mini-value js-last-played">—</div>
             </div>
           </div>
-        </section>
 
-        <!-- GAME SCREEN -->
-        <section class="screen" id="gameScreen">
-          <div class="qmeta">
-            <div class="chip" id="questionTypeChip">Question Type</div>
-            <div class="chip" id="questionCategoryChip">Category</div>
-            <div class="chip" id="noMissChip">No-Miss Run Alive</div>
+          <div class="tag-row">
+            <span class="tag">Down</span>
+            <span class="tag">Out</span>
+            <span class="tag">Pull</span>
+            <span class="tag">High Hat</span>
+            <span class="tag">Leverage Point</span>
+            <span class="tag">Deuces</span>
           </div>
 
-          <div class="scenario">
-            <p class="prompt" id="promptText">Prompt goes here</p>
-            <p id="scenarioText"></p>
+          <div class="card-actions">
+            <a class="card-btn primary" href="./games/sam-jack-key-read-rapid-fire.html?v=22">Launch Game</a>
+          </div>
+        </article>
+
+        <!-- GAME 2 -->
+        <article class="game-card locked" data-game-slug="win-the-edge" data-built="false">
+          <div class="card-top">
+            <div>
+              <div class="card-kicker">Game 2</div>
+              <h3>Win the Edge</h3>
+            </div>
+            <span class="badge locked-badge">COMING SOON</span>
           </div>
 
-          <div class="answers" id="answersWrap"></div>
+          <p class="card-desc">
+            Box versus wrong-arm, off-the-ball versus on-the-ball technique, power strong, power weak, kick-out recognition, and edge control.
+          </p>
 
-          <div class="feedback" id="feedbackBox">
-            <div class="headline">Ready</div>
-            <div>Select the best answer.</div>
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Focus</div>
+              <div class="mini-value">Edge Setting</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Primary Skill</div>
+              <div class="mini-value">Box / Spill</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Mode</div>
+              <div class="mini-value">Scenario Trainer</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Status</div>
+              <div class="mini-value">Placeholder</div>
+            </div>
           </div>
-        </section>
 
-        <!-- END SCREEN -->
-        <section class="screen" id="endScreen">
-          <div class="ticket" id="ticketWrap"></div>
-        </section>
+          <div class="tag-row">
+            <span class="tag">Box</span>
+            <span class="tag">Wrong Arm</span>
+            <span class="tag">Power Strong</span>
+            <span class="tag">Power Weak</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="card-btn ghost" type="button" disabled>Not Built Yet</button>
+          </div>
+        </article>
+
+        <!-- GAME 3 -->
+        <article class="game-card locked" data-game-slug="okie-run-fit-master" data-built="false">
+          <div class="card-top">
+            <div>
+              <div class="card-kicker">Game 3</div>
+              <h3>OKIE Run Fit Master</h3>
+            </div>
+            <span class="badge locked-badge">COMING SOON</span>
+          </div>
+
+          <p class="card-desc">
+            Flow-to and flow-away fits, scrape and spill, alley player rules, Deuces, and front-specific responsibilities.
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Focus</div>
+              <div class="mini-value">Run Fits</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Primary Skill</div>
+              <div class="mini-value">Fit Recognition</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Mode</div>
+              <div class="mini-value">Front ID</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Status</div>
+              <div class="mini-value">Placeholder</div>
+            </div>
+          </div>
+
+          <div class="tag-row">
+            <span class="tag">Scrape</span>
+            <span class="tag">Spill</span>
+            <span class="tag">Alley</span>
+            <span class="tag">Deuces</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="card-btn ghost" type="button" disabled>Not Built Yet</button>
+          </div>
+        </article>
+
+        <!-- GAME 4 -->
+        <article class="game-card locked" data-game-slug="read-the-qb" data-built="false">
+          <div class="card-top">
+            <div>
+              <div class="card-kicker">Game 4</div>
+              <h3>Read the QB</h3>
+            </div>
+            <span class="badge locked-badge">COMING SOON</span>
+          </div>
+
+          <p class="card-desc">
+            Read-side rules, make-him-give discipline, no-hero chasing, cutback rules, and quarterback leverage.
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Focus</div>
+              <div class="mini-value">Zone Read</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Primary Skill</div>
+              <div class="mini-value">QB Leverage</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Mode</div>
+              <div class="mini-value">Decision Trainer</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Status</div>
+              <div class="mini-value">Placeholder</div>
+            </div>
+          </div>
+
+          <div class="tag-row">
+            <span class="tag">Read Side</span>
+            <span class="tag">Make Him Give</span>
+            <span class="tag">Cutback</span>
+            <span class="tag">Contain</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="card-btn ghost" type="button" disabled>Not Built Yet</button>
+          </div>
+        </article>
+
+        <!-- GAME 5 -->
+        <article class="game-card locked" data-game-slug="coverage-rules-lab" data-built="false">
+          <div class="card-top">
+            <div>
+              <div class="card-kicker">Game 5</div>
+              <h3>Coverage Rules Lab</h3>
+            </div>
+            <span class="badge locked-badge">COMING SOON</span>
+          </div>
+
+          <p class="card-desc">
+            Deuces, Solo, Panther, Match, Robber, Cloud, and Trey using your exact coverage teaching language.
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Focus</div>
+              <div class="mini-value">Coverage Rules</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Primary Skill</div>
+              <div class="mini-value">Route Reaction</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Mode</div>
+              <div class="mini-value">Coverage Match</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Status</div>
+              <div class="mini-value">Placeholder</div>
+            </div>
+          </div>
+
+          <div class="tag-row">
+            <span class="tag">Deuces</span>
+            <span class="tag">Solo</span>
+            <span class="tag">Panther</span>
+            <span class="tag">Match</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="card-btn ghost" type="button" disabled>Not Built Yet</button>
+          </div>
+        </article>
+
+        <!-- GAME 6 -->
+        <article class="game-card locked" data-game-slug="contain-rush-rules" data-built="false">
+          <div class="card-top">
+            <div>
+              <div class="card-kicker">Game 6</div>
+              <h3>Contain Rush Rules</h3>
+            </div>
+            <span class="badge locked-badge">COMING SOON</span>
+          </div>
+
+          <p class="card-desc">
+            Outside contain, gap rush integrity, quarterback depth rules, and constricting the quarterback.
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Focus</div>
+              <div class="mini-value">Pass Rush</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Primary Skill</div>
+              <div class="mini-value">Contain Discipline</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Mode</div>
+              <div class="mini-value">Rush Integrity</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Status</div>
+              <div class="mini-value">Placeholder</div>
+            </div>
+          </div>
+
+          <div class="tag-row">
+            <span class="tag">Contain</span>
+            <span class="tag">Gap Rush</span>
+            <span class="tag">QB Depth</span>
+            <span class="tag">Pocket Control</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="card-btn ghost" type="button" disabled>Not Built Yet</button>
+          </div>
+        </article>
+
+        <!-- GAME 7 -->
+        <article class="game-card locked" data-game-slug="alignment-iq" data-built="false">
+          <div class="card-top">
+            <div>
+              <div class="card-kicker">Game 7</div>
+              <h3>Alignment IQ</h3>
+            </div>
+            <span class="badge locked-badge">COMING SOON</span>
+          </div>
+
+          <p class="card-desc">
+            Apex alignment, single-receiver rules, on-ball versus off-ball positioning, and pre-snap leverage point setup.
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Focus</div>
+              <div class="mini-value">Alignment</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Primary Skill</div>
+              <div class="mini-value">Pre-Snap Setup</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Mode</div>
+              <div class="mini-value">Recognition</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Status</div>
+              <div class="mini-value">Placeholder</div>
+            </div>
+          </div>
+
+          <div class="tag-row">
+            <span class="tag">Apex</span>
+            <span class="tag">EMLOS</span>
+            <span class="tag">Off Ball</span>
+            <span class="tag">On Ball</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="card-btn ghost" type="button" disabled>Not Built Yet</button>
+          </div>
+        </article>
+
+        <!-- GAME 8 -->
+        <article class="game-card locked" data-game-slug="film-room-simulator" data-built="false">
+          <div class="card-top">
+            <div>
+              <div class="card-kicker">Game 8</div>
+              <h3>Film Room Simulator</h3>
+            </div>
+            <span class="badge locked-badge">COMING SOON</span>
+          </div>
+
+          <p class="card-desc">
+            Pause-and-diagnose reactions using fronts, run concepts, key reads, and responsibility checks tied to your install language.
+          </p>
+
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="mini-label">Focus</div>
+              <div class="mini-value">Film Reaction</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Primary Skill</div>
+              <div class="mini-value">Diagnosis Speed</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Mode</div>
+              <div class="mini-value">Simulator</div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-label">Status</div>
+              <div class="mini-value">Placeholder</div>
+            </div>
+          </div>
+
+          <div class="tag-row">
+            <span class="tag">Film Room</span>
+            <span class="tag">Pause & Diagnose</span>
+            <span class="tag">Responsibility</span>
+            <span class="tag">Reaction</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="card-btn ghost" type="button" disabled>Not Built Yet</button>
+          </div>
+        </article>
+
       </div>
-    </div>
+    </section>
   </div>
 
   <script>
-    const GAME_TITLE = "Sam & Jack Key Read Rapid Fire";
-    const TOTAL_QUESTIONS = 20;
-    const HUB_PATH = "../index.html";
+    const HUB_STORAGE_PREFIX = "sj_hub_game_";
 
-    const questionBank = [
-      {
-        type: "Key Read",
-        category: "Helmet Key",
-        prompt: "What is the correct key read?",
-        scenario: "At the snap, your key’s helmet and shoulders move inside. You immediately snap your eyes across the line to see if a kick-out is coming.",
-        choices: [
-          "Down",
-          "Out",
-          "Pull",
-          "High Hat"
-        ],
-        correct: "Down",
-        explain: "Inside movement by the key is a Down read. Your first reaction is to get to your Leverage Point and check for a puller or kick-out."
-      },
-      {
-        type: "Reaction",
-        category: "Down with Puller",
-        prompt: "On a Down read with a puller coming, what is the first coaching answer?",
-        scenario: "You step with the inside foot, gain ground, and now recognize the puller coming to kick out.",
-        choices: [
-          "Continue to the Leverage Point outside the down block",
-          "Chase the puller down the line",
-          "Immediately squeeze inside and abandon the edge",
-          "Drop into coverage"
-        ],
-        correct: "Continue to the Leverage Point outside the down block",
-        explain: "Your rule is to continue to the Leverage Point. You must set the edge tightly and win the race to the edge."
-      },
-      {
-        type: "Reaction",
-        category: "Edge Setting",
-        prompt: "What is the coaching point once you arrive at the Leverage Point off the ball?",
-        scenario: "You are off the ball, power is coming to you, and the kick-out is arriving.",
-        choices: [
-          "Remain square and impact the kick-out with the inside foot up",
-          "Turn your shoulders and run under the block",
-          "Give ground and catch the blocker deep",
-          "Dip inside and guess at the ball"
-        ],
-        correct: "Remain square and impact the kick-out with the inside foot up",
-        explain: "The teaching point is square body position, inside foot up, bent power angles, and a violent strike to at least stalemate the kick-out."
-      },
-      {
-        type: "Key Read",
-        category: "Helmet Key",
-        prompt: "What is the correct key read?",
-        scenario: "The key shows a pass set. Helmet rises, body posture comes up, and there is no run demeanor.",
-        choices: [
-          "High Hat",
-          "Down",
-          "Out",
-          "Pull"
-        ],
-        correct: "High Hat",
-        explain: "A High Hat by the key triggers pass recognition and immediate engagement in the called coverage or pass-rush rule."
-      },
-      {
-        type: "Reaction",
-        category: "Coverage Trigger",
-        prompt: "On a High Hat read while off the ball, what is the correct coaching response?",
-        scenario: "You are aligned off the LOS and read pass from your key immediately.",
-        choices: [
-          "Immediately engage fully in your called coverage rules",
-          "Attack the C gap no matter what",
-          "Wrong-arm the tackle",
-          "Run the hump path to the QB"
-        ],
-        correct: "Immediately engage fully in your called coverage rules",
-        explain: "Off-ball High Hat means coverage now. Your read steps are finished and your coverage rules take over."
-      },
-      {
-        type: "Key Read",
-        category: "Helmet Key",
-        prompt: "What is the correct key read?",
-        scenario: "Your key pulls away from you. You step to your leverage point and square to the QB for zone-read or cutback responsibility.",
-        choices: [
-          "Pull Away",
-          "High Hat",
-          "Out",
-          "Base"
-        ],
-        correct: "Pull Away",
-        explain: "Key Pull Away is treated like Down with no puller coming to you. You continue your rule and square for read/cutback."
-      },
-      {
-        type: "Reaction",
-        category: "Zone Read",
-        prompt: "On a Down read without a puller, what must the read-side player do versus Zone Read?",
-        scenario: "No kick-out is coming. You snap shoulders back parallel, eyes to the backfield, and the QB is the read key.",
-        choices: [
-          "Maintain outside leverage on the QB and make him give the ball",
-          "Chase the zone give immediately",
-          "Run inside the tackle box and guess",
-          "Turn and run to cutback first"
-        ],
-        correct: "Maintain outside leverage on the QB and make him give the ball",
-        explain: "Your teaching point is clear: make him give the ball, or be in position so he cannot beat you outside."
-      },
-      {
-        type: "Reaction",
-        category: "Zone Read",
-        prompt: "Which answer matches your coaching language exactly?",
-        scenario: "A player is tempted to chase the back on zone read because he thinks he can make the tackle.",
-        choices: [
-          "Do not be a hero and chase the zone give",
-          "Always attack the give first",
-          "Guess and go if you feel fast enough",
-          "The first tackle is always the right tackle"
-        ],
-        correct: "Do not be a hero and chase the zone give",
-        explain: "That is your exact coaching correction. The job is to play the QB correctly on read side responsibility."
-      },
-      {
-        type: "Reaction",
-        category: "Cutback / Deucesback",
-        prompt: "Ball away. What is Sam’s shuffle/cutback teaching point?",
-        scenario: "You verify ball away and there is a C-gap player to your side.",
-        choices: [
-          "Square shoulders and slow-go shuffle from outside to B gap strong",
-          "Run over the top immediately and lose leverage",
-          "Sprint to the opposite numbers",
-          "Turn your shoulders and chase the tailback"
-        ],
-        correct: "Square shoulders and slow-go shuffle from outside to B gap strong",
-        explain: "On ball away, Sam slow shuffles with square shoulders from outside to B gap strong for cutback/Deucesback responsibility."
-      },
-      {
-        type: "Reaction",
-        category: "Cutback / Deucesback",
-        prompt: "Ball away. What is Jack’s shuffle/cutback teaching point?",
-        scenario: "You verify ball away and there is no immediate threat back to you yet.",
-        choices: [
-          "Slow shuffle and keep leverage to A gap weak",
-          "Run directly to the ball at full speed",
-          "Turn your hips and sprint to the alley",
-          "Abort leverage and cross the QB face"
-        ],
-        correct: "Slow shuffle and keep leverage to A gap weak",
-        explain: "Jack’s teaching language is slow shuffle, keep leverage, and work to A gap weak on ball away."
-      },
-      {
-        type: "Key Read",
-        category: "Outside Hat",
-        prompt: "What key best fits this picture?",
-        scenario: "The key’s outside hat and numbers widen. The surface is stretching and your path must adjust to stay outside-in on the ball.",
-        choices: [
-          "Out",
-          "High Hat",
-          "Pull",
-          "Down"
-        ],
-        correct: "Out",
-        explain: "When outside hat and numbers move wide, that is your Out / outside-zone style read."
-      },
-      {
-        type: "Reaction",
-        category: "Outside Zone",
-        prompt: "Against Outside Zone to the Sam or Jack, what is the coaching answer?",
-        scenario: "Outside hat and numbers move wide to your side.",
-        choices: [
-          "Adjust course, get to the LOS or just beyond, and set a hard edge with outside leverage",
-          "Take depth and reopen the edge",
-          "Turn shoulders and run under the block",
-          "Sit flat-footed and wait on the back"
-        ],
-        correct: "Adjust course, get to the LOS or just beyond, and set a hard edge with outside leverage",
-        explain: "Your rule is maintain outside leverage, get down to the LOS or just beyond, and minimize the vertical seam."
-      },
-      {
-        type: "Reaction",
-        category: "Base Block",
-        prompt: "Versus a base block on Sam or Jack, what is the technique answer?",
-        scenario: "Outside hat #1 is coming at you and the blocker is trying to base you.",
-        choices: [
-          "Set a hard edge, extend the inside arm, and fight base pressure with the outside arm free",
-          "Turn and run behind the block",
-          "Duck under and guess inside",
-          "Catch the block soft with both feet even"
-        ],
-        correct: "Set a hard edge, extend the inside arm, and fight base pressure with the outside arm free",
-        explain: "Base technique: set hard edge, lock out, sink hips, keep the gap hand free, and fight pressure."
-      },
-      {
-        type: "Reaction",
-        category: "On the LOS",
-        prompt: "On the LOS with a Down read and a puller coming, what is your spill rule?",
-        scenario: "You are on the ball. Down block happens, a kick-out is coming, and the scrape LB is vacating.",
-        choices: [
-          "Throw the wrong arm and back hip through the kick-out to close the gap",
-          "Box everything and bounce backward",
-          "Run outside the block and widen the gap",
-          "Sit and wait for the second puller"
-        ],
-        correct: "Throw the wrong arm and back hip through the kick-out to close the gap",
-        explain: "On the LOS, the spill rule is wrong-arm the kick-out and close the vacated gap."
-      },
-      {
-        type: "Reaction",
-        category: "Pass Rush Rules",
-        prompt: "What is the outside rusher rule in pass rush?",
-        scenario: "You are outside and get an overset by the tackle. The inside lane looks tempting.",
-        choices: [
-          "Outside rushers are contain rush, always",
-          "Take the inside gap any time it opens",
-          "Cross the QB’s face if it feels clean",
-          "Rush behind the quarterback depth"
-        ],
-        correct: "Outside rushers are contain rush, always",
-        explain: "Your rule is clear: outside rushers are contain rush, always. Do not lose the edge of the pocket."
-      },
-      {
-        type: "Reaction",
-        category: "Pass Rush Rules",
-        prompt: "What is the depth rule once you rush near the QB?",
-        scenario: "You are close to the QB depth and know you cannot turn the corner cleanly.",
-        choices: [
-          "Drive the blocker into the QB and never go past QB depth",
-          "Run six yards past the QB and loop back",
-          "Stop your feet and look around",
-          "Cross his face and guess inside"
-        ],
-        correct: "Drive the blocker into the QB and never go past QB depth",
-        explain: "When you cannot turn the corner, constrict the QB by driving the blocker and never running past his depth."
-      },
-      {
-        type: "Reaction",
-        category: "Alignment",
-        prompt: "Off the LOS with two receivers, where is Sam or Jack aligned?",
-        scenario: "You are off the ball and see two receivers to your side.",
-        choices: [
-          "Apex between #2 and the end man on the LOS",
-          "Head up on #1 at 1x1",
-          "Stacked directly behind the Mike",
-          "Inside shade of the guard"
-        ],
-        correct: "Apex between #2 and the end man on the LOS",
-        explain: "Your off-ball two-receiver alignment is Apex between #2 and the end man on the LOS."
-      },
-      {
-        type: "Reaction",
-        category: "Coverage Rules",
-        prompt: "In Deuces coverage, what is the opening teaching phrase on High Hat?",
-        scenario: "You are apexed and read pass immediately.",
-        choices: [
-          "Open to 2, feel 2, see 1",
-          "Open to 1, feel 1, see 2",
-          "Eyes to QB first and ignore #2",
-          "Carry #1 vertical first no matter what"
-        ],
-        correct: "Open to 2, feel 2, see 1",
-        explain: "That is the exact progression phrase in your install language for Deuces."
-      },
-      {
-        type: "Reaction",
-        category: "Coverage Rules",
-        prompt: "In Deuces, what do you do with #2 on a vertical release?",
-        scenario: "You open to #2 on High Hat and he works vertical.",
-        choices: [
-          "Wall 2 off and carry him 10–12 yards before release",
-          "Jump #1 immediately",
-          "Abort and drive the flat",
-          "Blitz the QB"
-        ],
-        correct: "Wall 2 off and carry him 10–12 yards before release",
-        explain: "Your Deuces teaching says to wall #2 and carry him 10–12 yards before releasing him to the safety."
-      },
-      {
-        type: "Reaction",
-        category: "Coverage Rules",
-        prompt: "Against a single wideout in Solo technique, what is the coaching phrase?",
-        scenario: "You are aligned for Solo versus single WR and get High Hat.",
-        choices: [
-          "Open to #1, clear the slant, then square and sink to curl/comeback window",
-          "Turn and run to the post",
-          "Immediate hard flat no matter what",
-          "Take the first inside move and never sink"
-        ],
-        correct: "Open to #1, clear the slant, then square and sink to curl/comeback window",
-        explain: "That is your exact Solo teaching progression versus a single wideout."
-      }
-    ];
-
-    const startScreen = document.getElementById("startScreen");
-    const gameScreen = document.getElementById("gameScreen");
-    const endScreen = document.getElementById("endScreen");
-
-    const studentNameInput = document.getElementById("studentName");
-    const startBtn = document.getElementById("startBtn");
-    const startMsg = document.getElementById("startMsg");
-
-    const hudStudent = document.getElementById("hudStudent");
-    const hudProgress = document.getElementById("hudProgress");
-    const hudAccuracy = document.getElementById("hudAccuracy");
-    const hudTimer = document.getElementById("hudTimer");
-    const hudStarted = document.getElementById("hudStarted");
-
-    const questionTypeChip = document.getElementById("questionTypeChip");
-    const questionCategoryChip = document.getElementById("questionCategoryChip");
-    const noMissChip = document.getElementById("noMissChip");
-    const promptText = document.getElementById("promptText");
-    const scenarioText = document.getElementById("scenarioText");
-    const answersWrap = document.getElementById("answersWrap");
-    const feedbackBox = document.getElementById("feedbackBox");
-    const ticketWrap = document.getElementById("ticketWrap");
-
-    const backBtn = document.getElementById("backBtn");
-    const restartTopBtn = document.getElementById("restartTopBtn");
-
-    let gameQuestions = [];
-    let currentIndex = 0;
-    let correctCount = 0;
-    let wrongCount = 0;
-    let startedAt = null;
-    let finishedAt = null;
-    let timerInterval = null;
-    let locked = false;
-    let studentName = "";
-
-    function shuffleArray(arr){
-      const copy = [...arr];
-      for(let i = copy.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
-
-    function formatDateTime(date){
-      return new Date(date).toLocaleString([],{
-        year:"numeric",
-        month:"numeric",
-        day:"numeric",
-        hour:"numeric",
-        minute:"2-digit",
-        second:"2-digit"
+    function formatDateTimeShort(dateString){
+      if(!dateString) return "—";
+      const d = new Date(dateString);
+      if(isNaN(d.getTime())) return "—";
+      return d.toLocaleString([], {
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
       });
     }
 
-    function formatClock(totalSeconds){
-      const mins = Math.floor(totalSeconds / 60);
-      const secs = totalSeconds % 60;
-      return String(mins).padStart(2,"0") + ":" + String(secs).padStart(2,"0");
-    }
-
-    function getElapsedSeconds(){
-      if(!startedAt) return 0;
-      const end = finishedAt ? new Date(finishedAt).getTime() : Date.now();
-      return Math.max(0, Math.floor((end - new Date(startedAt).getTime()) / 1000));
-    }
-
-    function updateHud(){
-      hudStudent.textContent = studentName || "—";
-      hudProgress.textContent = `${Math.min(currentIndex, TOTAL_QUESTIONS)} / ${TOTAL_QUESTIONS}`;
-      const answered = correctCount + wrongCount;
-      const acc = answered === 0 ? 100 : Math.round((correctCount / answered) * 100);
-      hudAccuracy.textContent = `${acc}%`;
-      hudTimer.textContent = formatClock(getElapsedSeconds());
-      hudStarted.textContent = startedAt ? formatDateTime(startedAt) : "Not started";
-      noMissChip.textContent = wrongCount === 0 ? "No-Miss Run Alive" : "No-Miss Run Broken";
-      noMissChip.style.borderColor = wrongCount === 0 ? "rgba(43,213,118,.45)" : "rgba(255,92,122,.45)";
-      noMissChip.style.background = wrongCount === 0 ? "rgba(43,213,118,.16)" : "rgba(255,92,122,.16)";
-      noMissChip.style.color = wrongCount === 0 ? "#d8ffea" : "#ffd4dc";
-    }
-
-    function startTimer(){
-      clearInterval(timerInterval);
-      timerInterval = setInterval(updateHud, 250);
-    }
-
-    function stopTimer(){
-      clearInterval(timerInterval);
-      timerInterval = null;
-      updateHud();
-    }
-
-    function showScreen(screenEl){
-      [startScreen, gameScreen, endScreen].forEach(s => s.classList.remove("active"));
-      screenEl.classList.add("active");
-    }
-
-    function buildQuestions(){
-      const selected = shuffleArray(questionBank).slice(0, TOTAL_QUESTIONS);
-      gameQuestions = selected.map(q => {
-        const shuffledChoices = shuffleArray(q.choices);
-        return {
-          ...q,
-          shuffledChoices
-        };
-      });
-    }
-
-    function resetState(fullResetName = false){
-      currentIndex = 0;
-      correctCount = 0;
-      wrongCount = 0;
-      startedAt = null;
-      finishedAt = null;
-      locked = false;
-      stopTimer();
-      if(fullResetName){
-        studentName = "";
-        studentNameInput.value = "";
+    function loadGameData(slug){
+      try{
+        const raw = localStorage.getItem(HUB_STORAGE_PREFIX + slug);
+        return raw ? JSON.parse(raw) : null;
+      }catch(e){
+        return null;
       }
-      feedbackBox.className = "feedback";
-      feedbackBox.innerHTML = `<div class="headline">Ready</div><div>Select the best answer.</div>`;
-      ticketWrap.innerHTML = "";
-      buildQuestions();
-      updateHud();
-      showScreen(startScreen);
-      startMsg.textContent = "";
     }
 
-    function startGame(){
-      const entered = studentNameInput.value.trim();
-      if(!entered){
-        startMsg.textContent = "Please enter student name before starting.";
-        studentNameInput.focus();
-        return;
-      }
+    function refreshHubCards(){
+      const builtCards = document.querySelectorAll(".game-card[data-built='true']");
+      const builtCountEl = document.getElementById("builtGames");
+      const perfectRunsEl = document.getElementById("perfectRuns");
+      const lastActivityEl = document.getElementById("lastActivity");
 
-      studentName = entered;
-      currentIndex = 0;
-      correctCount = 0;
-      wrongCount = 0;
-      startedAt = new Date().toISOString();
-      finishedAt = null;
-      locked = false;
+      let perfectRuns = 0;
+      let builtGames = 0;
+      let mostRecent = null;
 
-      buildQuestions();
-      updateHud();
-      startTimer();
-      showScreen(gameScreen);
-      renderQuestion();
-    }
+      builtCards.forEach(card => {
+        builtGames++;
+        const slug = card.dataset.gameSlug;
+        const data = loadGameData(slug);
 
-    function renderQuestion(){
-      updateHud();
+        const statusEl = card.querySelector(".js-status");
+        const accuracyEl = card.querySelector(".js-accuracy");
+        const perfectEl = card.querySelector(".js-perfect");
+        const lastPlayedEl = card.querySelector(".js-last-played");
 
-      const q = gameQuestions[currentIndex];
-      if(!q){
-        finishGame();
-        return;
-      }
+        if(!data){
+          statusEl.textContent = "Ready";
+          accuracyEl.textContent = "—";
+          perfectEl.textContent = "No";
+          lastPlayedEl.textContent = "—";
+          return;
+        }
 
-      questionTypeChip.textContent = q.type;
-      questionCategoryChip.textContent = q.category;
-      promptText.textContent = q.prompt;
-      scenarioText.textContent = q.scenario;
+        statusEl.textContent = data.status || "Played";
+        accuracyEl.textContent = typeof data.bestAccuracy === "number" ? `${data.bestAccuracy}%` : "—";
+        perfectEl.textContent = data.perfectRun ? "Yes" : "No";
+        lastPlayedEl.textContent = formatDateTimeShort(data.lastPlayed);
 
-      feedbackBox.className = "feedback";
-      feedbackBox.innerHTML = `<div class="headline">Choose the best answer.</div><div>Use the exact Sam/Jack coaching language.</div>`;
+        card.classList.remove("mastered", "in-progress");
 
-      answersWrap.innerHTML = "";
-      locked = false;
+        if(data.perfectRun){
+          card.classList.add("mastered");
+          perfectRuns++;
+        } else if(data.status && data.status !== "Ready"){
+          card.classList.add("in-progress");
+        }
 
-      q.shuffledChoices.forEach(choiceText => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "choice";
-        btn.textContent = choiceText;
-        btn.addEventListener("click", () => handleAnswer(choiceText, btn));
-        answersWrap.appendChild(btn);
-      });
-    }
-
-    function handleAnswer(selectedText, btnEl){
-      if(locked) return;
-      locked = true;
-
-      const q = gameQuestions[currentIndex];
-      const isCorrect = selectedText === q.correct;
-      const choiceButtons = [...answersWrap.querySelectorAll(".choice")];
-
-      choiceButtons.forEach(btn => {
-        btn.classList.add("locked");
-        if(btn.textContent === q.correct){
-          btn.classList.add("correct");
+        if(data.lastPlayed){
+          const playedDate = new Date(data.lastPlayed);
+          if(!isNaN(playedDate.getTime())){
+            if(!mostRecent || playedDate > mostRecent){
+              mostRecent = playedDate;
+            }
+          }
         }
       });
 
-      if(isCorrect){
-        correctCount++;
-        btnEl.classList.add("correct");
-        feedbackBox.className = "feedback good";
-        feedbackBox.innerHTML = `
-          <div class="headline">Correct</div>
-          <div>${q.explain}</div>
-        `;
-      } else {
-        wrongCount++;
-        btnEl.classList.add("wrong");
-        feedbackBox.className = "feedback bad";
-        feedbackBox.innerHTML = `
-          <div class="headline">Incorrect</div>
-          <div><strong>Correct answer:</strong> ${q.correct}</div>
-          <div style="margin-top:8px;">${q.explain}</div>
-          <div style="margin-top:8px;"><strong>No-Miss Run Status:</strong> This run can still be completed for practice, but the submit ticket is no longer available. Restart for a perfect run.</div>
-        `;
-      }
-
-      currentIndex++;
-      updateHud();
-
-      setTimeout(() => {
-        if(currentIndex >= TOTAL_QUESTIONS){
-          finishGame();
-        } else {
-          renderQuestion();
-        }
-      }, isCorrect ? 1100 : 2200);
+      builtCountEl.textContent = builtGames;
+      perfectRunsEl.textContent = perfectRuns;
+      lastActivityEl.textContent = mostRecent
+        ? mostRecent.toLocaleString([], { month:"numeric", day:"numeric", hour:"numeric", minute:"2-digit" })
+        : "None yet";
     }
 
-    function finishGame(){
-      finishedAt = new Date().toISOString();
-      stopTimer();
-      showScreen(endScreen);
-
-      const elapsed = formatClock(getElapsedSeconds());
-      const passedPerfect = wrongCount === 0 && correctCount === TOTAL_QUESTIONS;
-      const accuracy = Math.round((correctCount / Math.max(1, correctCount + wrongCount)) * 100);
-
-      if(passedPerfect){
-        ticketWrap.innerHTML = `
-          <div class="ticketbox">
-            <div class="passbadge">Perfect Run Earned</div>
-            <h2 style="margin:0 0 8px 0;">Submit Ticket</h2>
-            <p class="muted" style="margin:0 0 12px 0;">This student completed a 100% no-miss run and qualified for credit.</p>
-
-            <div class="ticketgrid">
-              <div class="ticketitem">
-                <div class="label">Student</div>
-                <div class="value">${escapeHtml(studentName)}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Game</div>
-                <div class="value">${GAME_TITLE}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Result</div>
-                <div class="value">PASS — 100% No-Miss Run</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Accuracy</div>
-                <div class="value">${accuracy}% (${correctCount}/${TOTAL_QUESTIONS})</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Started</div>
-                <div class="value">${formatDateTime(startedAt)}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Finished</div>
-                <div class="value">${formatDateTime(finishedAt)}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Elapsed Time</div>
-                <div class="value mono">${elapsed}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Misses</div>
-                <div class="value">0</div>
-              </div>
-            </div>
-
-            <div class="footerbtns">
-              <button class="btn good" type="button" onclick="window.print()">Print / Save Ticket</button>
-              <button class="btn bad" type="button" id="restartEndPassBtn">Play Again</button>
-            </div>
-          </div>
-        `;
-      } else {
-        ticketWrap.innerHTML = `
-          <div class="ticketfail">
-            <div class="failbadge">Ticket Not Earned</div>
-            <h2 style="margin:0 0 8px 0;">Run Complete</h2>
-            <p class="muted" style="margin:0 0 12px 0;">The student finished the game, but a perfect no-miss run is required for the submit ticket.</p>
-
-            <div class="ticketgrid">
-              <div class="ticketitem">
-                <div class="label">Student</div>
-                <div class="value">${escapeHtml(studentName)}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Game</div>
-                <div class="value">${GAME_TITLE}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Result</div>
-                <div class="value">Practice Complete — Restart Required</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Accuracy</div>
-                <div class="value">${accuracy}% (${correctCount}/${TOTAL_QUESTIONS})</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Started</div>
-                <div class="value">${formatDateTime(startedAt)}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Finished</div>
-                <div class="value">${formatDateTime(finishedAt)}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Elapsed Time</div>
-                <div class="value mono">${elapsed}</div>
-              </div>
-              <div class="ticketitem">
-                <div class="label">Misses</div>
-                <div class="value">${wrongCount}</div>
-              </div>
-            </div>
-
-            <div class="footerbtns">
-              <button class="btn bad" type="button" id="restartEndFailBtn">Restart for Perfect Run</button>
-            </div>
-          </div>
-        `;
-      }
-
-      const restartPass = document.getElementById("restartEndPassBtn");
-      const restartFail = document.getElementById("restartEndFailBtn");
-      if(restartPass) restartPass.addEventListener("click", () => quickRestart());
-      if(restartFail) restartFail.addEventListener("click", () => quickRestart());
-    }
-
-    function quickRestart(){
-      currentIndex = 0;
-      correctCount = 0;
-      wrongCount = 0;
-      startedAt = new Date().toISOString();
-      finishedAt = null;
-      locked = false;
-      buildQuestions();
-      updateHud();
-      startTimer();
-      showScreen(gameScreen);
-      renderQuestion();
-    }
-
-    function escapeHtml(str){
-      return str.replace(/[&<>"']/g, function(ch){
-        const map = {
-          "&":"&amp;",
-          "<":"&lt;",
-          ">":"&gt;",
-          "\"":"&quot;",
-          "'":"&#39;"
-        };
-        return map[ch];
-      });
-    }
-
-    startBtn.addEventListener("click", startGame);
-    studentNameInput.addEventListener("keydown", (e) => {
-      if(e.key === "Enter") startGame();
-    });
-
-    restartTopBtn.addEventListener("click", () => {
-      if(startedAt && !finishedAt){
-        const ok = confirm("Restart this run? Current progress will be lost.");
-        if(!ok) return;
-      }
-      quickRestartFromAnywhere();
-    });
-
-    function quickRestartFromAnywhere(){
-      const entered = studentNameInput.value.trim() || studentName;
-      if(!entered){
-        resetState(false);
-        return;
-      }
-      studentName = entered;
-      quickRestart();
-    }
-
-    backBtn.addEventListener("click", () => {
-      window.location.href = HUB_PATH;
-    });
-
-    window.addEventListener("beforeunload", function(e){
-      if(startedAt && !finishedAt){
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    });
-
-    resetState(false);
+    refreshHubCards();
+    window.addEventListener("storage", refreshHubCards);
   </script>
 </body>
 </html>
