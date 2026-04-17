@@ -1,181 +1,869 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>OKIE Run Fit Master</title>
-<link rel="stylesheet" href="../styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OKIE Run Fit Master</title>
+  <link rel="stylesheet" href="../styles.css" />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#111a2f;
+      --panel2:#0f1730;
+      --text:#e7eefc;
+      --muted:#a8b4cf;
+      --line:rgba(255,255,255,.12);
+      --good:#2bd576;
+      --bad:#ff5c7a;
+      --warn:#ffd166;
+      --accent:#7aa2ff;
+      --chip:rgba(122,162,255,.14);
+      --chipLine:rgba(122,162,255,.28);
+      --shadow:0 18px 55px rgba(0,0,0,.40);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(180deg,#0b1220,#070b14);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    button,input{font:inherit}
+
+    .wrap{width:min(1100px,92vw);margin:24px auto 40px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+    .titleblock h1{margin:0;font-size:clamp(1.4rem,2.8vw,2.2rem);line-height:1.1;letter-spacing:.2px}
+    .titleblock .sub{margin-top:6px;color:var(--muted);font-size:.98rem}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+
+    .btn{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+      transition:transform .08s ease,opacity .2s ease,border-color .2s ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .btn.primary{border-color:rgba(122,162,255,.5);background:linear-gradient(180deg,rgba(122,162,255,.20),rgba(122,162,255,.09))}
+    .btn.good{border-color:rgba(43,213,118,.45);background:linear-gradient(180deg,rgba(43,213,118,.16),rgba(43,213,118,.06))}
+    .btn.bad{border-color:rgba(255,92,122,.45);background:linear-gradient(180deg,rgba(255,92,122,.16),rgba(255,92,122,.06))}
+
+    .hud{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(120px,1fr));
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .hudcard{
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:12px 14px;
+      box-shadow:var(--shadow);
+      min-height:84px;
+    }
+
+    .hudlabel{
+      color:var(--muted);
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:8px;
+    }
+
+    .hudvalue{
+      font-weight:800;
+      font-size:1.05rem;
+      line-height:1.2;
+      word-break:break-word;
+    }
+
+    .panel{
+      background:linear-gradient(180deg,var(--panel),var(--panel2));
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .panelhead{
+      padding:18px 20px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+    }
+
+    .panelbody{padding:20px}
+    .screen{display:none}
+    .screen.active{display:block}
+
+    .startgrid{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:18px;
+    }
+
+    .card{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .card h2,.card h3{margin:0 0 10px 0;line-height:1.15}
+    .muted{color:var(--muted)}
+    .tiny{font-size:.85rem}
+    .mono{font-family:var(--mono)}
+
+    .rules{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .rule{
+      padding:10px 12px;
+      border:1px solid var(--chipLine);
+      background:var(--chip);
+      border-radius:12px;
+    }
+
+    .field{
+      display:grid;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .field label{
+      font-weight:700;
+      color:var(--muted);
+    }
+
+    .field input{
+      width:100%;
+      padding:14px 14px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#0d1529;
+      color:var(--text);
+      outline:none;
+    }
+    .field input:focus{border-color:var(--accent)}
+
+    .statusline{
+      margin-top:12px;
+      min-height:22px;
+      color:var(--warn);
+      font-weight:700;
+    }
+
+    .qmeta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--chipLine);
+      background:var(--chip);
+      color:#d9e6ff;
+      font-size:.88rem;
+      font-weight:700;
+    }
+
+    .prompt{
+      font-size:1.2rem;
+      font-weight:800;
+      line-height:1.35;
+      margin:0 0 14px 0;
+    }
+
+    .scenario{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      border-radius:16px;
+      padding:16px;
+      margin-bottom:16px;
+    }
+
+    .scenario p{
+      margin:0 0 10px 0;
+      line-height:1.5;
+    }
+
+    .answers{
+      display:grid;
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .choice{
+      text-align:left;
+      width:100%;
+      padding:14px 15px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      cursor:pointer;
+      transition:transform .08s ease,border-color .15s ease,background .15s ease;
+      line-height:1.35;
+      font-weight:700;
+    }
+    .choice:hover{transform:translateY(-1px);border-color:rgba(122,162,255,.45)}
+    .choice.correct{border-color:rgba(43,213,118,.55);background:rgba(43,213,118,.12)}
+    .choice.wrong{border-color:rgba(255,92,122,.55);background:rgba(255,92,122,.12)}
+    .choice.locked{cursor:default}
+
+    .feedback{
+      margin-top:16px;
+      min-height:78px;
+      border-radius:14px;
+      padding:14px 15px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+    }
+    .feedback.good{border-color:rgba(43,213,118,.4);background:rgba(43,213,118,.10)}
+    .feedback.bad{border-color:rgba(255,92,122,.4);background:rgba(255,92,122,.10)}
+    .feedback .headline{font-weight:900;margin-bottom:8px}
+
+    .ticket{display:grid;gap:14px}
+    .ticketbox{
+      border:1px solid rgba(43,213,118,.35);
+      background:linear-gradient(180deg,rgba(43,213,118,.12),rgba(43,213,118,.05));
+      border-radius:18px;
+      padding:18px;
+    }
+    .ticketfail{
+      border:1px solid rgba(255,92,122,.35);
+      background:linear-gradient(180deg,rgba(255,92,122,.12),rgba(255,92,122,.05));
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .ticketgrid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(220px,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+
+    .ticketitem{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.04);
+    }
+
+    .ticketitem .label{
+      color:var(--muted);
+      font-size:.82rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:6px;
+    }
+
+    .ticketitem .value{
+      font-weight:800;
+      line-height:1.35;
+      word-break:break-word;
+    }
+
+    .footerbtns{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .passbadge,.failbadge{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:900;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      margin-bottom:12px;
+    }
+
+    .passbadge{
+      background:rgba(43,213,118,.18);
+      border:1px solid rgba(43,213,118,.45);
+      color:#c8ffe0;
+    }
+
+    .failbadge{
+      background:rgba(255,92,122,.18);
+      border:1px solid rgba(255,92,122,.45);
+      color:#ffd4dc;
+    }
+
+    @media (max-width:900px){
+      .startgrid{grid-template-columns:1fr}
+    }
+
+    @media (max-width:860px){
+      .hud{grid-template-columns:repeat(2,minmax(120px,1fr))}
+      .ticketgrid{grid-template-columns:1fr}
+    }
+  </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="titleblock">
+        <h1>OKIE Run Fit Master v1</h1>
+        <div class="sub">LIVE BUILD v1 • Flow To / Away • Scrape • Spill • Alley • Deuces • Fit Integrity</div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="backBtn" type="button">← Back to Hub</button>
+        <button class="btn bad" id="restartTopBtn" type="button">Restart Game</button>
+      </div>
+    </div>
 
-<div class="wrap">
+    <div class="hud">
+      <div class="hudcard">
+        <div class="hudlabel">Student</div>
+        <div class="hudvalue" id="hudStudent">—</div>
+      </div>
+      <div class="hudcard">
+        <div class="hudlabel">Progress</div>
+        <div class="hudvalue" id="hudProgress">0 / 22</div>
+      </div>
+      <div class="hudcard">
+        <div class="hudlabel">Accuracy</div>
+        <div class="hudvalue" id="hudAccuracy">100%</div>
+      </div>
+      <div class="hudcard">
+        <div class="hudlabel">Timer</div>
+        <div class="hudvalue mono" id="hudTimer">00:00</div>
+      </div>
+      <div class="hudcard">
+        <div class="hudlabel">Started</div>
+        <div class="hudvalue" id="hudStarted">Not started</div>
+      </div>
+      <div class="hudcard">
+        <div class="hudlabel">Finished</div>
+        <div class="hudvalue" id="hudFinished">Not finished</div>
+      </div>
+    </div>
 
-<a class="back-link" href="../index.html">← Back to Hub</a>
+    <div class="panel">
+      <div class="panelhead">
+        <strong>Build Goal:</strong> Train OKIE run-fit language so players connect edge control, scrape/spill rules, alley fits, Deuces, and backside integrity into one clean structure.
+      </div>
+      <div class="panelbody">
+        <section class="screen active" id="startScreen">
+          <div class="startgrid">
+            <div class="card">
+              <h2>How this game works</h2>
+              <p class="muted">Players identify fit responsibility using your install language. Missed questions recycle for extra reps, but a <strong>100% no-miss run</strong> is still required for the ticket.</p>
 
-<header class="hero">
-<div class="kicker">Legend Mastery Series • Sam & Jack</div>
-<h1>OKIE Run Fit Master</h1>
-<p class="sub">
-Flow recognition • Scrape vs Spill • Alley fits • Deuces • Inside-out leverage
-</p>
+              <div class="rules">
+                <div class="rule"><strong>Name entry required</strong> before the game begins.</div>
+                <div class="rule"><strong>Auto-submit on answer click.</strong></div>
+                <div class="rule"><strong>Missed questions recycle</strong> to the end of the run.</div>
+                <div class="rule"><strong>100% no-miss run required</strong> for the submit ticket.</div>
+                <div class="rule"><strong>Live tracking:</strong> start time, finish time, timer, accuracy, and progress.</div>
+                <div class="rule"><strong>Live class-card ready:</strong> hub updates after each run.</div>
+              </div>
 
-<div class="pills">
-<span class="pill">22 questions</span>
-<span class="pill">Auto-submit</span>
-<span class="pill">Auto-advance</span>
-<span class="pill">Miss recycle</span>
-<span class="pill">100% required</span>
-</div>
-</header>
+              <div class="field">
+                <label for="studentName">Student Name</label>
+                <input id="studentName" type="text" maxlength="40" placeholder="Enter first and last name" autocomplete="name" />
+              </div>
 
-<section class="panel">
+              <div class="statusline" id="startMsg"></div>
 
-<div class="panel-body">
+              <div class="footerbtns">
+                <button class="btn primary" id="startBtn" type="button">Start Game</button>
+              </div>
+            </div>
 
-<div id="startScreen">
-<h2>How this works</h2>
+            <div class="card">
+              <h3>What this game trains</h3>
+              <div class="rules">
+                <div class="rule">Flow language: <strong>Flow to / Flow away</strong></div>
+                <div class="rule">Fit relationships: <strong>Scrape / Spill / Box / Alley</strong></div>
+                <div class="rule">Coverage structure tie-in: <strong>Deuces</strong></div>
+                <div class="rule">Backside rules: <strong>Stay square / Protect cutback / Do your job</strong></div>
+              </div>
+              <p class="tiny muted" style="margin-top:14px;">
+                File name:
+                <span class="mono">okie-run-fit-master.html</span>
+              </p>
+            </div>
+          </div>
+        </section>
 
-<ul>
-<li>Identify flow direction and your fit</li>
-<li>Use exact OKIE coaching language</li>
-<li>Missed questions return later</li>
-<li>Perfect run required for ticket</li>
-</ul>
+        <section class="screen" id="gameScreen">
+          <div class="qmeta">
+            <div class="chip" id="questionTypeChip">Question Type</div>
+            <div class="chip" id="questionCategoryChip">Category</div>
+            <div class="chip" id="noMissChip">No-Miss Run Alive</div>
+          </div>
 
-<input id="nameInput" placeholder="Enter Name"/>
-<br><br>
-<button onclick="startGame()">Start</button>
-</div>
+          <div class="scenario">
+            <p class="prompt" id="promptText">Prompt goes here</p>
+            <p id="scenarioText"></p>
+          </div>
 
-<div id="gameScreen" style="display:none">
-<div id="hud"></div>
-<h2 id="question"></h2>
-<p id="scenario"></p>
-<div id="answers"></div>
-<p id="feedback"></p>
-</div>
+          <div class="answers" id="answersWrap"></div>
 
-<div id="endScreen" style="display:none"></div>
+          <div class="feedback" id="feedbackBox">
+            <div class="headline">Ready</div>
+            <div>Select the best answer.</div>
+          </div>
+        </section>
 
-</div>
-</section>
-</div>
+        <section class="screen" id="endScreen">
+          <div class="ticket" id="ticketWrap"></div>
+        </section>
+      </div>
+    </div>
+  </div>
 
-<script>
+  <script>
+    const GAME_TITLE = "OKIE Run Fit Master";
+    const TOTAL_QUESTIONS = 22;
+    const HUB_PATH = "../index.html";
+    const HUB_GAME_SLUG = "okie-run-fit-master";
+    const HUB_STORAGE_PREFIX = "sj_hub_game_";
 
-const TOTAL_QUESTIONS = 22;
+    function saveHubProgress(payload){
+      try{
+        const key = HUB_STORAGE_PREFIX + HUB_GAME_SLUG;
+        const existing = JSON.parse(localStorage.getItem(key) || "{}");
+        const merged = {
+          gameTitle: GAME_TITLE,
+          status: payload.status ?? existing.status ?? "Ready",
+          bestAccuracy: Math.max(
+            typeof existing.bestAccuracy === "number" ? existing.bestAccuracy : 0,
+            typeof payload.bestAccuracy === "number" ? payload.bestAccuracy : 0
+          ),
+          perfectRun: Boolean(existing.perfectRun || payload.perfectRun),
+          lastPlayed: payload.lastPlayed || new Date().toISOString(),
+          startedAt: payload.startedAt || existing.startedAt || null,
+          finishedAt: payload.finishedAt || existing.finishedAt || null,
+          studentName: payload.studentName || existing.studentName || ""
+        };
+        localStorage.setItem(key, JSON.stringify(merged));
+      }catch(e){
+        console.warn("Hub progress save failed.", e);
+      }
+    }
 
-let questions = [
-{q:"Flow to you off the ball, what is your fit?",s:"Run is coming toward your side from depth.",a:["Box and force inside","Wrong arm and spill","Run the alley now","Chase the puller"],c:0},
+    const questionBank = [
+      {type:"Reaction",category:"Flow To",prompt:"Flow to you off the ball, what is your fit?",scenario:"Run is coming toward your side from depth and you are the edge player off the ball.",choices:["Box and force inside","Wrong arm and spill","Run the alley now","Chase the puller"],correct:"Box and force inside",explain:"Off the ball with flow to you, your fit is box. Set the edge and force the ball back inside."},
+      {type:"Reaction",category:"Flow To",prompt:"Flow to you on the LOS, what is your fit?",scenario:"You are on the ball and the kick-out is entering your gap.",choices:["Wrong arm and close gap","Box and widen edge","Sit and read the ball","Run around and chase"],correct:"Wrong arm and close gap",explain:"On the LOS with flow to you, your spill rule is wrong arm and close the vacated gap."},
+      {type:"Reaction",category:"Flow Away",prompt:"Flow away, what is your job?",scenario:"Ball is moving away from your alignment and you are now backside support.",choices:["Slow shuffle and stay square","Sprint over top fast","Turn and run now","Collapse inside hard"],correct:"Slow shuffle and stay square",explain:"Flow away means stay square, slow shuffle, and protect cutback before committing."},
+      {type:"Concept",category:"Flow Away",prompt:"Why slow shuffle on flow away?",scenario:"You are the backside player and the offense wants you to lose leverage.",choices:["Maintain leverage and cutback","Get to ball faster","Avoid all contact","Beat the puller early"],correct:"Maintain leverage and cutback",explain:"The slow shuffle keeps you square and responsible for cutback or reverse."},
+      {type:"Reaction",category:"Scrape",prompt:"What is the scrape LB job versus power?",scenario:"The edge player has kept the ball tight and inside.",choices:["Fit inside-out off edge","Run outside the edge","Take first gap seen","Chase the quarterback"],correct:"Fit inside-out off edge",explain:"Scrape fits inside-out off the edge player's control of the ball."},
+      {type:"Concept",category:"Edge",prompt:"What happens if the edge widens?",scenario:"The edge player gives ground and the runner gets more space.",choices:["Scrape window gets bigger","Scrape gets easier","Ball cuts inside sooner","Nothing changes"],correct:"Scrape window gets bigger",explain:"A wider edge creates a larger scrape window and makes the fit harder for the linebacker."},
+      {type:"Recognition",category:"Deuces",prompt:"Deuces call most directly ties to what structure?",scenario:"You are teaching players what Deuces means in the support picture.",choices:["Two-over-two support side","Always man coverage","Always zone drop","Automatic blitz check"],correct:"Two-over-two support side",explain:"Deuces ties into the two-receiver support structure and the fit/cap picture around it."},
+      {type:"Reaction",category:"Alley",prompt:"What is the alley player's job?",scenario:"The ball breaks outside the box and support must fit cleanly.",choices:["Fit inside-out on runner","Force ball even wider","Wait for safety help","Attack the quarterback"],correct:"Fit inside-out on runner",explain:"The alley player fits inside-out and keeps leverage on the runner."},
+      {type:"Concept",category:"Leverage",prompt:"Inside-out leverage means what?",scenario:"You are pursuing the ball with help outside of you.",choices:["Stay inside hip of runner","Attack outside shoulder","Go head across always","Run behind the play"],correct:"Stay inside hip of runner",explain:"Inside-out leverage means staying on the inside hip and not losing outside help structure."},
+      {type:"Mistake ID",category:"Backside",prompt:"What is the biggest backside mistake?",scenario:"Flow is away and a player decides to run over the top too fast.",choices:["Overpursuing and losing cutback","Not moving at all","Reading too fast","Wrong arming late"],correct:"Overpursuing and losing cutback",explain:"The major backside mistake is overpursuit that gives up cutback or reverse."},
+      {type:"Concept",category:"Scrape vs Spill",prompt:"What is the relationship between scrape and spill?",scenario:"The edge player wrong-arms the kick-out and closes the gap.",choices:["LB scrapes over top","LB fills same gap","LB drops in coverage","LB blitzes outside"],correct:"LB scrapes over top",explain:"Spill by the edge player creates the scrape path for the linebacker over the top."},
+      {type:"Reaction",category:"Sam",prompt:"Flow to Sam off the ball, what is Sam?",scenario:"Sam sees run directly to his side from depth.",choices:["Box","Wrong arm","Run alley now","Collapse inside"],correct:"Box",explain:"Sam off the ball with flow to him is box."},
+      {type:"Reaction",category:"Jack",prompt:"Flow to Jack off the ball, what is Jack?",scenario:"Jack is the edge support player with run coming to him from depth.",choices:["Box and hold edge","Wrong arm inside","Run inside gap","Chase puller"],correct:"Box and hold edge",explain:"Jack off the ball still boxes and protects the edge."},
+      {type:"Concept",category:"Fit Integrity",prompt:"What destroys fit integrity fastest?",scenario:"Players stop trusting the structure and freelance.",choices:["Gap chasing","Reading keys","Staying square","Slow shuffle"],correct:"Gap chasing",explain:"Gap chasing breaks the structure and leaves another fit empty."},
+      {type:"Reaction",category:"Zone Read",prompt:"If QB keeps on read away, what must the backside player do?",scenario:"The give is gone and the quarterback now threatens opposite leverage.",choices:["Maintain leverage on QB","Chase the running back","Collapse inside now","Freeze at the mesh"],correct:"Maintain leverage on QB",explain:"The backside player must stay responsible for the quarterback and not lose leverage."},
+      {type:"Concept",category:"Zone Read",prompt:"Why should you not chase the give?",scenario:"A player wants to abandon read-side responsibility to tackle the back.",choices:["Lose QB responsibility","Too slow for the back","Edge gets wider","Creates the alley"],correct:"Lose QB responsibility",explain:"Chasing the give means abandoning the quarterback and your actual assignment."},
+      {type:"Concept",category:"Power Strong",prompt:"What is the main goal versus Power Strong?",scenario:"The play is going to strength and the edge is being tested.",choices:["Win edge and control fit","Spill everything always","Run through gaps fast","Chase quarterback"],correct:"Win edge and control fit",explain:"The main goal is to win the edge and preserve fit structure inside of it."},
+      {type:"Concept",category:"Power Weak",prompt:"What is the main goal versus Power Weak?",scenario:"The play is going away from the strength side and backside integrity matters.",choices:["Maintain backside integrity","Run to the ball fast","Attack frontside gap","Auto blitz weak"],correct:"Maintain backside integrity",explain:"Power Weak still demands discipline on the backside so the fit stays complete."},
+      {type:"Decision",category:"Coaching Point",prompt:"What is fit first priority after the snap?",scenario:"Players are tempted to go make a play outside the call.",choices:["Assignment over playmaking","Make tackle first","Beat blocker fast","Attack QB now"],correct:"Assignment over playmaking",explain:"The first priority is assignment integrity. Big plays come from doing your job correctly."},
+      {type:"Concept",category:"Gap Integrity",prompt:"What happens if two players fill the same gap?",scenario:"Poor communication causes two defenders to fit one window.",choices:["Gap is lost elsewhere","Play is stopped","Edge gets stronger","Ball reverses"],correct:"Gap is lost elsewhere",explain:"Two in one gap means another gap is now empty."},
+      {type:"Concept",category:"Scrape Window",prompt:"The scrape window depends most on what?",scenario:"The edge player's technique is either tight or loose.",choices:["Tight edge control","LB speed only","Safety depth only","DL penetration only"],correct:"Tight edge control",explain:"A tight edge creates a clean, manageable scrape window."},
+      {type:"Decision",category:"Summary",prompt:"What best summarizes OKIE run-fit discipline?",scenario:"You are explaining the system to players who keep freelancing.",choices:["Do your job and trust fits","Make plays aggressively","Attack first movement","Always chase ball"],correct:"Do your job and trust fits",explain:"That is the cleanest coaching summary of OKIE fit football."}
+    ];
 
-{q:"Flow to you on the LOS, what is your fit?",s:"Kick-out is coming directly at you.",a:["Wrong arm and close gap","Box and widen edge","Sit and read","Run around block"],c:0},
+    const startScreen = document.getElementById("startScreen");
+    const gameScreen = document.getElementById("gameScreen");
+    const endScreen = document.getElementById("endScreen");
+    const studentNameInput = document.getElementById("studentName");
+    const startBtn = document.getElementById("startBtn");
+    const startMsg = document.getElementById("startMsg");
+    const hudStudent = document.getElementById("hudStudent");
+    const hudProgress = document.getElementById("hudProgress");
+    const hudAccuracy = document.getElementById("hudAccuracy");
+    const hudTimer = document.getElementById("hudTimer");
+    const hudStarted = document.getElementById("hudStarted");
+    const hudFinished = document.getElementById("hudFinished");
+    const questionTypeChip = document.getElementById("questionTypeChip");
+    const questionCategoryChip = document.getElementById("questionCategoryChip");
+    const noMissChip = document.getElementById("noMissChip");
+    const promptText = document.getElementById("promptText");
+    const scenarioText = document.getElementById("scenarioText");
+    const answersWrap = document.getElementById("answersWrap");
+    const feedbackBox = document.getElementById("feedbackBox");
+    const ticketWrap = document.getElementById("ticketWrap");
+    const backBtn = document.getElementById("backBtn");
+    const restartTopBtn = document.getElementById("restartTopBtn");
 
-{q:"Flow away, what is your job?",s:"Ball is moving opposite your alignment.",a:["Slow shuffle and stay square","Sprint over top fast","Turn and run immediately","Collapse inside fast"],c:0},
+    let gameQuestions = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let startedAt = null;
+    let finishedAt = null;
+    let timerInterval = null;
+    let locked = false;
+    let studentName = "";
+    let missedQueue = [];
 
-{q:"Why slow shuffle on flow away?",s:"You are backside support.",a:["Maintain leverage and cutback","Get to ball faster","Avoid contact","Beat the puller"],c:0},
+    function shuffleArray(arr){
+      const copy = [...arr];
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
 
-{q:"What is scrape LB job vs power?",s:"Edge player boxes the ball.",a:["Fit inside-out off edge","Run outside edge","Take first gap seen","Chase QB"],c:0},
+    function formatDateTime(date){
+      return new Date(date).toLocaleString([],{
+        year:"numeric",
+        month:"numeric",
+        day:"numeric",
+        hour:"numeric",
+        minute:"2-digit",
+        second:"2-digit"
+      });
+    }
 
-{q:"What happens if edge widens?",s:"Edge player gives ground.",a:["Scrape window gets bigger","Scrape gets easier","Ball cuts inside quicker","Nothing changes"],c:0},
+    function formatClock(totalSeconds){
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      return String(mins).padStart(2,"0") + ":" + String(secs).padStart(2,"0");
+    }
 
-{q:"Deuces call means what?",s:"Two WR side with coverage adjustment.",a:["Two-over-two with support","Always man coverage","Always zone drop","Blitz adjustment"],c:0},
+    function getElapsedSeconds(){
+      if(!startedAt) return 0;
+      const end = finishedAt ? new Date(finishedAt).getTime() : Date.now();
+      return Math.max(0, Math.floor((end - new Date(startedAt).getTime()) / 1000));
+    }
 
-{q:"Alley player job?",s:"Ball breaks outside the box.",a:["Fit inside-out on runner","Force ball wider","Wait for safety","Attack QB"],c:0},
+    function updateHud(){
+      hudStudent.textContent = studentName || "—";
+      hudProgress.textContent = `${Math.min(correctCount + wrongCount, TOTAL_QUESTIONS)} / ${TOTAL_QUESTIONS}`;
+      const answered = correctCount + wrongCount;
+      const acc = answered === 0 ? 100 : Math.round((correctCount / answered) * 100);
+      hudAccuracy.textContent = `${acc}%`;
+      hudTimer.textContent = formatClock(getElapsedSeconds());
+      hudStarted.textContent = startedAt ? formatDateTime(startedAt) : "Not started";
+      hudFinished.textContent = finishedAt ? formatDateTime(finishedAt) : "Not finished";
+      noMissChip.textContent = wrongCount === 0 ? "No-Miss Run Alive" : "No-Miss Run Broken";
+      noMissChip.style.borderColor = wrongCount === 0 ? "rgba(43,213,118,.45)" : "rgba(255,92,122,.45)";
+      noMissChip.style.background = wrongCount === 0 ? "rgba(43,213,118,.16)" : "rgba(255,92,122,.16)";
+      noMissChip.style.color = wrongCount === 0 ? "#d8ffea" : "#ffd4dc";
+    }
 
-{q:"Inside-out leverage means?",s:"You are pursuing the ball.",a:["Stay inside hip of runner","Attack outside shoulder","Go head across always","Run behind play"],c:0},
+    function startTimer(){
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateHud, 250);
+    }
 
-{q:"Biggest backside mistake?",s:"Flow is away from you.",a:["Overpursuing and losing cutback","Not moving at all","Reading too fast","Wrong arm late"],c:0},
+    function stopTimer(){
+      clearInterval(timerInterval);
+      timerInterval = null;
+      updateHud();
+    }
 
-{q:"Scrape vs spill relationship?",s:"Edge player wrong-arms.",a:["LB scrapes over top","LB fills same gap","LB drops into coverage","LB blitzes outside"],c:0},
+    function showScreen(screenEl){
+      [startScreen, gameScreen, endScreen].forEach(s => s.classList.remove("active"));
+      screenEl.classList.add("active");
+    }
 
-{q:"Flow to Sam off ball?",s:"Sam sees run to his side.",a:["Box the ball","Wrong arm","Run alley early","Collapse inside"],c:0},
+    function buildQuestions(){
+      const selected = shuffleArray(questionBank).slice(0, TOTAL_QUESTIONS);
+      gameQuestions = selected.map(q => ({
+        ...q,
+        shuffledChoices: shuffleArray(q.choices)
+      }));
+    }
 
-{q:"Flow to Jack off ball?",s:"Jack is edge support.",a:["Box and hold edge","Wrong arm","Run inside gap","Chase puller"],c:0},
+    function resetState(fullResetName=false){
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      startedAt = null;
+      finishedAt = null;
+      locked = false;
+      missedQueue = [];
+      stopTimer();
+      if(fullResetName){
+        studentName = "";
+        studentNameInput.value = "";
+      }
+      feedbackBox.className = "feedback";
+      feedbackBox.innerHTML = `<div class="headline">Ready</div><div>Select the best answer.</div>`;
+      ticketWrap.innerHTML = "";
+      buildQuestions();
+      updateHud();
+      showScreen(startScreen);
+      startMsg.textContent = "";
+    }
 
-{q:"What destroys fit integrity?",s:"Players abandon assignment.",a:["Gap chasing","Reading keys","Staying square","Slow shuffle"],c:0},
+    function startGame(){
+      const entered = studentNameInput.value.trim();
+      if(!entered){
+        startMsg.textContent = "Please enter student name before starting.";
+        studentNameInput.focus();
+        return;
+      }
 
-{q:"If QB keeps on read away?",s:"You are backside player.",a:["Maintain leverage on QB","Chase RB","Collapse inside","Freeze"],c:0},
+      studentName = entered;
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      startedAt = new Date().toISOString();
+      finishedAt = null;
+      locked = false;
+      missedQueue = [];
 
-{q:"Why not chase give?",s:"Backside read situation.",a:["Lose QB responsibility","Too slow to catch RB","Edge gets wider","Creates alley"],c:0},
+      buildQuestions();
+      updateHud();
+      startTimer();
+      showScreen(gameScreen);
 
-{q:"Power strong main goal?",s:"Play comes to strength.",a:["Win edge and control fit","Spill everything always","Run through gaps","Chase QB"],c:0},
+      saveHubProgress({
+        status: "In Progress",
+        bestAccuracy: 0,
+        perfectRun: false,
+        lastPlayed: new Date().toISOString(),
+        startedAt,
+        studentName
+      });
 
-{q:"Power weak goal?",s:"Play away from strength.",a:["Maintain backside integrity","Run to ball fast","Attack frontside gap","Blitz"],c:0},
+      renderQuestion();
+    }
 
-{q:"What is fit first priority?",s:"Ball is snapped.",a:["Assignment over playmaking","Make tackle first","Beat blocker fast","Attack QB"],c:0},
+    function renderQuestion(){
+      updateHud();
 
-{q:"What happens if two players fill same gap?",s:"Poor communication.",a:["Gap is lost elsewhere","Play is stopped","Edge gets stronger","Ball reverses"],c:0},
+      if(currentIndex >= gameQuestions.length){
+        if(missedQueue.length){
+          gameQuestions = gameQuestions.concat(missedQueue.map(q => ({
+            ...q,
+            shuffledChoices: shuffleArray(q.choices)
+          })));
+          missedQueue = [];
+        } else {
+          finishGame();
+          return;
+        }
+      }
 
-{q:"Scrape window depends on?",s:"Edge player technique.",a:["Tight edge control","LB speed","Safety depth","DL penetration"],c:0},
+      const q = gameQuestions[currentIndex];
+      if(!q){
+        finishGame();
+        return;
+      }
 
-{q:"Best coaching summary?",s:"Explaining run fits to players.",a:["Do your job and trust fits","Make plays aggressively","Attack first movement","Always chase ball"],c:0}
-];
+      questionTypeChip.textContent = q.type;
+      questionCategoryChip.textContent = q.category;
+      promptText.textContent = q.prompt;
+      scenarioText.textContent = q.scenario;
 
-let index=0, correct=0, wrong=0, missed=[];
+      feedbackBox.className = "feedback";
+      feedbackBox.innerHTML = `<div class="headline">Choose the best answer.</div><div>Use the exact OKIE run-fit coaching language.</div>`;
 
-function startGame(){
-let name=document.getElementById("nameInput").value;
-if(!name){alert("Enter name");return;}
+      answersWrap.innerHTML = "";
+      locked = false;
 
-document.getElementById("startScreen").style.display="none";
-document.getElementById("gameScreen").style.display="block";
+      q.shuffledChoices.forEach(choiceText => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "choice";
+        btn.textContent = choiceText;
+        btn.addEventListener("click", () => handleAnswer(choiceText, btn));
+        answersWrap.appendChild(btn);
+      });
+    }
 
-render();
-}
+    function handleAnswer(selectedText, btnEl){
+      if(locked) return;
+      locked = true;
 
-function render(){
-if(index>=questions.length){
-if(missed.length){
-questions=questions.concat(missed);
-missed=[];
-}else{
-endGame();
-return;
-}
-}
+      const q = gameQuestions[currentIndex];
+      const isCorrect = selectedText === q.correct;
+      const choiceButtons = [...answersWrap.querySelectorAll(".choice")];
 
-let q=questions[index];
-document.getElementById("question").innerText=q.q;
-document.getElementById("scenario").innerText=q.s;
+      choiceButtons.forEach(btn => {
+        btn.classList.add("locked");
+        if(btn.textContent === q.correct){
+          btn.classList.add("correct");
+        }
+      });
 
-let ansDiv=document.getElementById("answers");
-ansDiv.innerHTML="";
+      if(isCorrect){
+        correctCount++;
+        btnEl.classList.add("correct");
+        feedbackBox.className = "feedback good";
+        feedbackBox.innerHTML = `
+          <div class="headline">Correct</div>
+          <div>${q.explain || "Correct."}</div>
+        `;
+      } else {
+        wrongCount++;
+        missedQueue.push(q);
+        btnEl.classList.add("wrong");
+        feedbackBox.className = "feedback bad";
+        feedbackBox.innerHTML = `
+          <div class="headline">Incorrect</div>
+          <div><strong>Correct answer:</strong> ${q.correct}</div>
+          <div style="margin-top:8px;">${q.explain || "Review the fit and be ready for this one again."}</div>
+          <div style="margin-top:8px;"><strong>No-Miss Run Status:</strong> This run can still be finished for practice, but the submit ticket is gone. This question will return later.</div>
+        `;
+      }
 
-q.a.forEach((choice,i)=>{
-let btn=document.createElement("button");
-btn.innerText=choice;
-btn.onclick=()=>answer(i);
-ansDiv.appendChild(btn);
-});
-}
+      currentIndex++;
+      updateHud();
 
-function answer(i){
-let q=questions[index];
+      setTimeout(() => {
+        renderQuestion();
+      }, isCorrect ? 1100 : 2200);
+    }
 
-if(i===q.c){
-correct++;
-}else{
-wrong++;
-missed.push(q);
-}
+    function finishGame(){
+      finishedAt = new Date().toISOString();
+      stopTimer();
+      showScreen(endScreen);
 
-index++;
-render();
-}
+      const elapsed = formatClock(getElapsedSeconds());
+      const passedPerfect = wrongCount === 0 && correctCount >= TOTAL_QUESTIONS;
+      const accuracy = Math.round((correctCount / Math.max(1, correctCount + wrongCount)) * 100);
 
-function endGame(){
-document.getElementById("gameScreen").style.display="none";
-document.getElementById("endScreen").style.display="block";
+      saveHubProgress({
+        status: passedPerfect ? "Mastered" : "Played",
+        bestAccuracy: accuracy,
+        perfectRun: passedPerfect,
+        lastPlayed: new Date().toISOString(),
+        startedAt,
+        finishedAt,
+        studentName
+      });
 
-let perfect = wrong===0;
+      if(passedPerfect){
+        ticketWrap.innerHTML = `
+          <div class="ticketbox">
+            <div class="passbadge">Perfect Run Earned</div>
+            <h2 style="margin:0 0 8px 0;">Submit Ticket</h2>
+            <p class="muted" style="margin:0 0 12px 0;">This student completed a 100% no-miss run and qualified for credit.</p>
+            <div class="ticketgrid">
+              <div class="ticketitem"><div class="label">Student</div><div class="value">${escapeHtml(studentName)}</div></div>
+              <div class="ticketitem"><div class="label">Game</div><div class="value">${GAME_TITLE}</div></div>
+              <div class="ticketitem"><div class="label">Result</div><div class="value">PASS — 100% No-Miss Run</div></div>
+              <div class="ticketitem"><div class="label">Accuracy</div><div class="value">${accuracy}%</div></div>
+              <div class="ticketitem"><div class="label">Started</div><div class="value">${formatDateTime(startedAt)}</div></div>
+              <div class="ticketitem"><div class="label">Finished</div><div class="value">${formatDateTime(finishedAt)}</div></div>
+              <div class="ticketitem"><div class="label">Elapsed Time</div><div class="value mono">${elapsed}</div></div>
+              <div class="ticketitem"><div class="label">Misses</div><div class="value">0</div></div>
+            </div>
+            <div class="footerbtns">
+              <button class="btn good" type="button" onclick="window.print()">Print / Save Ticket</button>
+              <button class="btn bad" type="button" id="restartEndPassBtn">Play Again</button>
+            </div>
+          </div>
+        `;
+      } else {
+        ticketWrap.innerHTML = `
+          <div class="ticketfail">
+            <div class="failbadge">Ticket Not Earned</div>
+            <h2 style="margin:0 0 8px 0;">Run Complete</h2>
+            <p class="muted" style="margin:0 0 12px 0;">A perfect no-miss run is required for the submit ticket.</p>
+            <div class="ticketgrid">
+              <div class="ticketitem"><div class="label">Student</div><div class="value">${escapeHtml(studentName)}</div></div>
+              <div class="ticketitem"><div class="label">Game</div><div class="value">${GAME_TITLE}</div></div>
+              <div class="ticketitem"><div class="label">Result</div><div class="value">Practice Complete — Restart Required</div></div>
+              <div class="ticketitem"><div class="label">Accuracy</div><div class="value">${accuracy}%</div></div>
+              <div class="ticketitem"><div class="label">Started</div><div class="value">${formatDateTime(startedAt)}</div></div>
+              <div class="ticketitem"><div class="label">Finished</div><div class="value">${formatDateTime(finishedAt)}</div></div>
+              <div class="ticketitem"><div class="label">Elapsed Time</div><div class="value mono">${elapsed}</div></div>
+              <div class="ticketitem"><div class="label">Misses</div><div class="value">${wrongCount}</div></div>
+            </div>
+            <div class="footerbtns">
+              <button class="btn bad" type="button" id="restartEndFailBtn">Restart for Perfect Run</button>
+            </div>
+          </div>
+        `;
+      }
 
-document.getElementById("endScreen").innerHTML = perfect
-? "<h2>Perfect Run — Ticket Earned</h2>"
-: "<h2>Run Complete — Restart Required</h2>";
-}
+      const restartPass = document.getElementById("restartEndPassBtn");
+      const restartFail = document.getElementById("restartEndFailBtn");
+      if(restartPass) restartPass.addEventListener("click", () => quickRestart());
+      if(restartFail) restartFail.addEventListener("click", () => quickRestart());
+    }
 
-</script>
+    function quickRestart(){
+      currentIndex = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      startedAt = new Date().toISOString();
+      finishedAt = null;
+      locked = false;
+      missedQueue = [];
+      buildQuestions();
+      updateHud();
+      startTimer();
+      showScreen(gameScreen);
 
+      saveHubProgress({
+        status: "In Progress",
+        bestAccuracy: 0,
+        perfectRun: false,
+        lastPlayed: new Date().toISOString(),
+        startedAt,
+        studentName
+      });
+
+      renderQuestion();
+    }
+
+    function escapeHtml(str){
+      return str.replace(/[&<>"']/g, function(ch){
+        const map = {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"};
+        return map[ch];
+      });
+    }
+
+    startBtn.addEventListener("click", startGame);
+    studentNameInput.addEventListener("keydown", e => { if(e.key === "Enter") startGame(); });
+
+    restartTopBtn.addEventListener("click", () => {
+      if(startedAt && !finishedAt){
+        const ok = confirm("Restart this run? Current progress will be lost.");
+        if(!ok) return;
+      }
+      quickRestartFromAnywhere();
+    });
+
+    function quickRestartFromAnywhere(){
+      const entered = studentNameInput.value.trim() || studentName;
+      if(!entered){
+        resetState(false);
+        return;
+      }
+      studentName = entered;
+      quickRestart();
+    }
+
+    backBtn.addEventListener("click", () => { window.location.href = HUB_PATH; });
+
+    window.addEventListener("beforeunload", function(e){
+      if(startedAt && !finishedAt){
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    });
+
+    resetState(false);
+  </script>
 </body>
 </html>
