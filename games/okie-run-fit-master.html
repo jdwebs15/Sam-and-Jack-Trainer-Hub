@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>OKIE Run Fit Master</title>
+<link rel="stylesheet" href="../styles.css"/>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<a class="back-link" href="../index.html">← Back to Hub</a>
+
+<header class="hero">
+<div class="kicker">Legend Mastery Series • Sam & Jack</div>
+<h1>OKIE Run Fit Master</h1>
+<p class="sub">
+Flow recognition • Scrape vs Spill • Alley fits • Deuces • Inside-out leverage
+</p>
+
+<div class="pills">
+<span class="pill">22 questions</span>
+<span class="pill">Auto-submit</span>
+<span class="pill">Auto-advance</span>
+<span class="pill">Miss recycle</span>
+<span class="pill">100% required</span>
+</div>
+</header>
+
+<section class="panel">
+
+<div class="panel-body">
+
+<div id="startScreen">
+<h2>How this works</h2>
+
+<ul>
+<li>Identify flow direction and your fit</li>
+<li>Use exact OKIE coaching language</li>
+<li>Missed questions return later</li>
+<li>Perfect run required for ticket</li>
+</ul>
+
+<input id="nameInput" placeholder="Enter Name"/>
+<br><br>
+<button onclick="startGame()">Start</button>
+</div>
+
+<div id="gameScreen" style="display:none">
+<div id="hud"></div>
+<h2 id="question"></h2>
+<p id="scenario"></p>
+<div id="answers"></div>
+<p id="feedback"></p>
+</div>
+
+<div id="endScreen" style="display:none"></div>
+
+</div>
+</section>
+</div>
+
+<script>
+
+const TOTAL_QUESTIONS = 22;
+
+let questions = [
+{q:"Flow to you off the ball, what is your fit?",s:"Run is coming toward your side from depth.",a:["Box and force inside","Wrong arm and spill","Run the alley now","Chase the puller"],c:0},
+
+{q:"Flow to you on the LOS, what is your fit?",s:"Kick-out is coming directly at you.",a:["Wrong arm and close gap","Box and widen edge","Sit and read","Run around block"],c:0},
+
+{q:"Flow away, what is your job?",s:"Ball is moving opposite your alignment.",a:["Slow shuffle and stay square","Sprint over top fast","Turn and run immediately","Collapse inside fast"],c:0},
+
+{q:"Why slow shuffle on flow away?",s:"You are backside support.",a:["Maintain leverage and cutback","Get to ball faster","Avoid contact","Beat the puller"],c:0},
+
+{q:"What is scrape LB job vs power?",s:"Edge player boxes the ball.",a:["Fit inside-out off edge","Run outside edge","Take first gap seen","Chase QB"],c:0},
+
+{q:"What happens if edge widens?",s:"Edge player gives ground.",a:["Scrape window gets bigger","Scrape gets easier","Ball cuts inside quicker","Nothing changes"],c:0},
+
+{q:"Deuces call means what?",s:"Two WR side with coverage adjustment.",a:["Two-over-two with support","Always man coverage","Always zone drop","Blitz adjustment"],c:0},
+
+{q:"Alley player job?",s:"Ball breaks outside the box.",a:["Fit inside-out on runner","Force ball wider","Wait for safety","Attack QB"],c:0},
+
+{q:"Inside-out leverage means?",s:"You are pursuing the ball.",a:["Stay inside hip of runner","Attack outside shoulder","Go head across always","Run behind play"],c:0},
+
+{q:"Biggest backside mistake?",s:"Flow is away from you.",a:["Overpursuing and losing cutback","Not moving at all","Reading too fast","Wrong arm late"],c:0},
+
+{q:"Scrape vs spill relationship?",s:"Edge player wrong-arms.",a:["LB scrapes over top","LB fills same gap","LB drops into coverage","LB blitzes outside"],c:0},
+
+{q:"Flow to Sam off ball?",s:"Sam sees run to his side.",a:["Box the ball","Wrong arm","Run alley early","Collapse inside"],c:0},
+
+{q:"Flow to Jack off ball?",s:"Jack is edge support.",a:["Box and hold edge","Wrong arm","Run inside gap","Chase puller"],c:0},
+
+{q:"What destroys fit integrity?",s:"Players abandon assignment.",a:["Gap chasing","Reading keys","Staying square","Slow shuffle"],c:0},
+
+{q:"If QB keeps on read away?",s:"You are backside player.",a:["Maintain leverage on QB","Chase RB","Collapse inside","Freeze"],c:0},
+
+{q:"Why not chase give?",s:"Backside read situation.",a:["Lose QB responsibility","Too slow to catch RB","Edge gets wider","Creates alley"],c:0},
+
+{q:"Power strong main goal?",s:"Play comes to strength.",a:["Win edge and control fit","Spill everything always","Run through gaps","Chase QB"],c:0},
+
+{q:"Power weak goal?",s:"Play away from strength.",a:["Maintain backside integrity","Run to ball fast","Attack frontside gap","Blitz"],c:0},
+
+{q:"What is fit first priority?",s:"Ball is snapped.",a:["Assignment over playmaking","Make tackle first","Beat blocker fast","Attack QB"],c:0},
+
+{q:"What happens if two players fill same gap?",s:"Poor communication.",a:["Gap is lost elsewhere","Play is stopped","Edge gets stronger","Ball reverses"],c:0},
+
+{q:"Scrape window depends on?",s:"Edge player technique.",a:["Tight edge control","LB speed","Safety depth","DL penetration"],c:0},
+
+{q:"Best coaching summary?",s:"Explaining run fits to players.",a:["Do your job and trust fits","Make plays aggressively","Attack first movement","Always chase ball"],c:0}
+];
+
+let index=0, correct=0, wrong=0, missed=[];
+
+function startGame(){
+let name=document.getElementById("nameInput").value;
+if(!name){alert("Enter name");return;}
+
+document.getElementById("startScreen").style.display="none";
+document.getElementById("gameScreen").style.display="block";
+
+render();
+}
+
+function render(){
+if(index>=questions.length){
+if(missed.length){
+questions=questions.concat(missed);
+missed=[];
+}else{
+endGame();
+return;
+}
+}
+
+let q=questions[index];
+document.getElementById("question").innerText=q.q;
+document.getElementById("scenario").innerText=q.s;
+
+let ansDiv=document.getElementById("answers");
+ansDiv.innerHTML="";
+
+q.a.forEach((choice,i)=>{
+let btn=document.createElement("button");
+btn.innerText=choice;
+btn.onclick=()=>answer(i);
+ansDiv.appendChild(btn);
+});
+}
+
+function answer(i){
+let q=questions[index];
+
+if(i===q.c){
+correct++;
+}else{
+wrong++;
+missed.push(q);
+}
+
+index++;
+render();
+}
+
+function endGame(){
+document.getElementById("gameScreen").style.display="none";
+document.getElementById("endScreen").style.display="block";
+
+let perfect = wrong===0;
+
+document.getElementById("endScreen").innerHTML = perfect
+? "<h2>Perfect Run — Ticket Earned</h2>"
+: "<h2>Run Complete — Restart Required</h2>";
+}
+
+</script>
+
+</body>
+</html>
