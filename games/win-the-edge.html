@@ -235,29 +235,155 @@
     }
 
     const questionBank = [
-      {type:"Reaction",category:"Off the Ball",prompt:"Off the ball with power coming to you, what is your job at the Leverage Point?",scenario:"You have identified the kick-out path and reached your edge fit on time.",choices:["Box the ball and set the edge tightly","Wrong arm the kick-out immediately","Run underneath the block and spill it","Give ground and wait on the runner"],correct:"Box the ball and set the edge tightly",explain:"Off the ball, your rule is box. Get to the Leverage Point, stay square, and set the edge as tight as possible."},
-      {type:"Reaction",category:"On the LOS",prompt:"On the LOS with a kick-out coming, what is your technique?",scenario:"You are aligned on the line and the surface blocks down with the kick-out entering your gap.",choices:["Wrong arm the kick-out and close the gap","Box it and keep the ball wide","Catch the block with both hands and peek","Run around the block and chase the ball"],correct:"Wrong arm the kick-out and close the gap",explain:"On the LOS, the coaching point is wrong arm and close the vacated gap."},
-      {type:"Reaction",category:"Leverage Point",prompt:"What is the Leverage Point versus down block with puller?",scenario:"The down block is set and the puller is coming to kick you out.",choices:["Two to three yards outside the edge of the down block","Inside shoulder of the puller","Directly on the heels of the down blocker","One yard behind the line waiting on contact"],correct:"Two to three yards outside the edge of the down block",explain:"Your Leverage Point is outside the down block. That is how you win the race to the edge."},
-      {type:"Reaction",category:"Edge Setting",prompt:"Why must you set the edge tightly?",scenario:"The scrape linebacker is fitting inside-out off your edge control.",choices:["To give the scrape LB a manageable window to work in","To create extra bounce space for the runner","To force the safety to become the primary edge player","To widen the fit so the linebacker sees the ball sooner"],correct:"To give the scrape LB a manageable window to work in",explain:"A tight edge shrinks the scrape window and keeps the fit clean for the inside-out player."},
-      {type:"Technique",category:"Off the Ball",prompt:"What body position is correct when you strike the kick-out off the ball?",scenario:"You have arrived at the Leverage Point and contact is about to happen.",choices:["Remain square with inside foot up and outside foot slightly back","Turn shoulders and split the block with both feet even","Open hips to the sideline and catch the block","Dip inside shoulder and reduce surface"],correct:"Remain square with inside foot up and outside foot slightly back",explain:"Stay square, inside foot up, outside foot slightly back in stagger, and bend power angles."},
-      {type:"Technique",category:"Off the Ball",prompt:"What happens if you get too much depth at the edge?",scenario:"You reached the fit but did so too deep off the ball.",choices:["You reopen the edge and enlarge the seam","You create a better angle on the kick-out","You help the scrape LB stay cleaner","You force the puller to miss you"],correct:"You reopen the edge and enlarge the seam",explain:"Too much depth gives the offense edge space back. The edge must be set tight."},
-      {type:"Reaction",category:"Power Strong",prompt:"In OKIE Power Strong, what is Sam off the ball?",scenario:"Flow is coming to the Sam side and Sam is off the ball.",choices:["Box","Spill","Scrape","Alley"],correct:"Box",explain:"Off the ball, Sam is box on power to him."},
-      {type:"Reaction",category:"Power Strong",prompt:"In OKIE Power Strong, what is Sam on the ball?",scenario:"Flow is coming to the Sam side and Sam is aligned on the line of scrimmage.",choices:["Wrong arm","Box","Alley","Press A"],correct:"Wrong arm",explain:"On the ball, Sam wrong arms the kick-out and closes the gap."},
-      {type:"Reaction",category:"Power Weak",prompt:"In OKIE Power Weak, what is Sam off the ball?",scenario:"Power is going weak and Sam is away from the point of attack but still in the structure.",choices:["Box if it comes to him on-ball/off-ball rules still apply to his side fits","Always spill from depth","Run the alley immediately","Take the backside A gap"],correct:"Box if it comes to him on-ball/off-ball rules still apply to his side fits",explain:"Your on-ball/off-ball rule does not change. Off the ball is box; on the ball is wrong arm."},
-      {type:"Reaction",category:"Kick-Out",prompt:"What is the minimum acceptable result on the kick-out off the ball?",scenario:"You arrive square and strike the blocker at the edge.",choices:["Stalemate the kick-out at minimum","Get knocked back but stay outside","Fall inside and create a pile","Slip under and hope the ball bounces"],correct:"Stalemate the kick-out at minimum",explain:"At minimum, the edge player must stalemate the kick-out and not give the edge away."},
-      {type:"Read",category:"Ball Carrier",prompt:"What tells you the runner is still committed outside?",scenario:"You are on the edge reading the ball carrier after initial contact on the kick-out.",choices:["His shoulders remain perpendicular to the LOS","His shoulders turn downhill inside","His eyes look at the corner","His feet chop in place"],correct:"His shoulders remain perpendicular to the LOS",explain:"Perpendicular shoulders indicate continued outside course and threaten your outside arm leverage."},
-      {type:"Reaction",category:"Disengage",prompt:"When the ball begins to out-leverage your edge, what do you do?",scenario:"You have engaged the kick-out and now the runner threatens outside of you.",choices:["Load the post foot, push outside, and punch to disengage","Sink deeper and wait on the safety","Turn shoulders inside and chase the puller","Stay glued to the blocker and let the corner take it"],correct:"Load the post foot, push outside, and punch to disengage",explain:"Once the ball threatens to out-leverage you, you must disengage and pursue through the inside half of the ball carrier."},
-      {type:"Reaction",category:"Pursuit",prompt:"After disengaging from the kick-out, what is your pursuit aiming point?",scenario:"You have come off the block and are now closing on the runner outside.",choices:["Inside half of the ball carrier to the inside hip","Outside shoulder to force him wider","Head across the ball no matter what","The back hip only from behind"],correct:"Inside half of the ball carrier to the inside hip",explain:"Your pursuit is through the inside half to flatten the ball and keep help leveraged outside."},
-      {type:"Concept",category:"Spill vs Box",prompt:"Which pairing is correct?",scenario:"You are comparing on-ball and off-ball edge rules.",choices:["Off the ball = Box; On the LOS = Wrong Arm","Off the ball = Wrong Arm; On the LOS = Box","Off the ball = Spill; On the LOS = Box","Off the ball = Alley; On the LOS = Spill"],correct:"Off the ball = Box; On the LOS = Wrong Arm",explain:"That is the core teaching rule for this game."},
-      {type:"Reaction",category:"Second Puller",prompt:"After wrong-arming on the LOS, what is the next objective on Power or Counter?",scenario:"You have thrown the wrong arm through the kick-out and turned vertical.",choices:["Take out the second puller without reopening the gap","Loop outside and become contain","Cross the face of the runner","Peel off and chase the quarterback"],correct:"Take out the second puller without reopening the gap",explain:"After wrong-arm spill, turn vertical and take out the second puller. Do not run past the gap and reopen it."},
-      {type:"Mistake ID",category:"On the LOS",prompt:"What is the major error after wrong-arming the kick-out?",scenario:"You have penetrated but continue too far past the fit.",choices:["Running past the gap that must be closed","Staying square too long","Not using both hands to shock","Reading the runner too late"],correct:"Running past the gap that must be closed",explain:"If you run past the gap, you reopen the very space you were supposed to close."},
-      {type:"Recognition",category:"Power Fit",prompt:"What does a visible kick-out threat tell the edge player?",scenario:"You see pull action and know the offense is trying to widen your side.",choices:["The edge is about to be tested and must be won tightly","The play is definitely pass-action","You should immediately abandon leverage and chase inside","The scrape LB becomes the first edge player"],correct:"The edge is about to be tested and must be won tightly",explain:"The kick-out is the offense's attempt to create edge space. You must win the edge."},
-      {type:"Reaction",category:"Edge Control",prompt:"What is the best statement of your job on the edge?",scenario:"The runner is approaching the perimeter and support players are fitting off you.",choices:["Determine the edge and force the ball to fit inside it","Avoid all contact and stay clean outside","Create maximum width so help arrives later","Cross the face of all blocks to make the play yourself"],correct:"Determine the edge and force the ball to fit inside it",explain:"You determine the edge. That is the whole point of this fit."},
-      {type:"Concept",category:"Scrape Window",prompt:"Why is boxing from depth different from wrong-arming on the LOS?",scenario:"You are teaching the distinction between the two edge techniques.",choices:["Because boxing keeps the edge intact for the scrape window while wrong-arm closes the vacated gap","Because wrong-arm is safer from depth and boxing is safer on the LOS","Because both techniques are interchangeable if played aggressively","Because boxing creates spill and wrong-arm creates force"],correct:"Because boxing keeps the edge intact for the scrape window while wrong-arm closes the vacated gap",explain:"Off the ball you box and keep the edge. On the LOS you wrong-arm and close the vacated gap."},
-      {type:"Reaction",category:"Power Strong",prompt:"What is Jack's basic job away from power flow in OKIE Power Strong?",scenario:"Power is going to the Sam side and Jack is away from the immediate kick-out.",choices:["Squeeze and box","Wrong arm the frontside puller","Become the alley player","Press A gap frontside"],correct:"Squeeze and box",explain:"In your run-fit language, Jack away from the immediate flow squeezes and boxes."},
-      {type:"Reaction",category:"Power Weak",prompt:"What is Jack's basic job when power comes weak to him in OKIE structure?",scenario:"The kick-out is threatening Jack's side and he is now part of the immediate edge fit.",choices:["Squeeze and box unless aligned on the LOS in a spill rule structure","Run straight upfield to create chaos","Always wrong-arm regardless of alignment","Give ground and wait on the safety"],correct:"Squeeze and box unless aligned on the LOS in a spill rule structure",explain:"Jack's fit language still depends on structure, but the edge must be controlled and not widened."},
-      {type:"Decision",category:"Best Coaching Answer",prompt:"What is the cleanest coaching summary of winning the edge?",scenario:"You are explaining the edge fit to a player who keeps widening the run lane.",choices:["Beat the kick-out to the Leverage Point, stay tight, and do not reopen the edge","Go deeper than the runner so you can see everything","Avoid contact and stay free as long as possible","Attack the first thing you see and trust speed"],correct:"Beat the kick-out to the Leverage Point, stay tight, and do not reopen the edge",explain:"That captures the whole coaching point: win the race to the edge, keep it tight, and do not reopen it."}
-    ];
+
+{type:"Reaction",category:"Off the Ball",prompt:"Off the ball with power coming to you, what is your job at the Leverage Point?",scenario:"You beat the puller to the spot and square up at the edge.",choices:[
+"Box the ball and set the edge tight",
+"Wrong arm the kick-out and close the gap",
+"Slip inside and spill it underneath",
+"Catch the block deep and wait on the runner"
+],correct:"Box the ball and set the edge tight"},
+
+{type:"Reaction",category:"On the LOS",prompt:"On the LOS with a kick-out coming, what is your technique?",scenario:"You are on the ball and the surface blocks down toward you.",choices:[
+"Wrong arm and close the gap",
+"Box it and keep the ball outside",
+"Catch the block and peek inside",
+"Run around the block and chase the ball"
+],correct:"Wrong arm and close the gap"},
+
+{type:"Reaction",category:"Leverage Point",prompt:"Where is your Leverage Point versus down block and pull?",scenario:"You see down block and a puller entering your side.",choices:[
+"Two yards outside the down block",
+"Directly on the down block",
+"Inside shoulder of the puller",
+"Three yards behind the LOS"
+],correct:"Two yards outside the down block"},
+
+{type:"Reaction",category:"Edge Setting",prompt:"Why must the edge be set tight?",scenario:"The scrape LB is fitting inside-out off your edge.",choices:[
+"To shrink the scrape window inside",
+"To give the runner more bounce space",
+"To widen the alley for support",
+"To force the safety to take the edge"
+],correct:"To shrink the scrape window inside"},
+
+{type:"Technique",category:"Off the Ball",prompt:"What is correct body position at contact off the ball?",scenario:"You are about to strike the kick-out at the edge.",choices:[
+"Square with inside foot up and base",
+"Turn shoulders and split the block",
+"Open hips and catch the block",
+"Dip inside shoulder and slip under"
+],correct:"Square with inside foot up and base"},
+
+{type:"Technique",category:"Depth Error",prompt:"What happens if you get too much depth at the edge?",scenario:"You arrive late and deeper than the ideal fit.",choices:[
+"You reopen the edge for the runner",
+"You force the puller to miss you",
+"You help the scrape fit faster",
+"You tighten the edge naturally"
+],correct:"You reopen the edge for the runner"},
+
+{type:"Reaction",category:"Power Strong",prompt:"In OKIE Power Strong, Sam off the ball is what?",scenario:"Power is coming directly to Sam from depth.",choices:[
+"Box",
+"Wrong arm",
+"Alley",
+"Press A"
+],correct:"Box"},
+
+{type:"Reaction",category:"Power Strong",prompt:"In OKIE Power Strong, Sam on the LOS is what?",scenario:"Sam is aligned on the ball and sees the kick-out.",choices:[
+"Wrong arm",
+"Box",
+"Alley",
+"Shuffle"
+],correct:"Wrong arm"},
+
+{type:"Reaction",category:"Kick-Out",prompt:"What is the minimum acceptable result on the kick-out off the ball?",scenario:"You meet the blocker at the Leverage Point.",choices:[
+"Stalemate the block at the edge",
+"Get knocked back but stay outside",
+"Fall inside and create a pile",
+"Slip under and avoid contact"
+],correct:"Stalemate the block at the edge"},
+
+{type:"Read",category:"Ball Carrier",prompt:"What tells you the runner is staying outside?",scenario:"You are engaged and reading the ball carrier.",choices:[
+"Shoulders stay square to sideline",
+"Shoulders turn downhill inside",
+"Eyes look back to the QB",
+"Feet stop on contact"
+],correct:"Shoulders stay square to sideline"},
+
+{type:"Reaction",category:"Disengage",prompt:"When the ball threatens outside leverage, what do you do?",scenario:"The runner is working to outflank your edge.",choices:[
+"Push off and work outside immediately",
+"Stay locked on the blocker longer",
+"Turn inside and chase the puller",
+"Wait for the safety to help"
+],correct:"Push off and work outside immediately"},
+
+{type:"Reaction",category:"Pursuit",prompt:"After disengaging, what is your pursuit aim?",scenario:"You are closing on the runner outside.",choices:[
+"Inside half of the ball carrier",
+"Outside shoulder to force wider",
+"Head across no matter what",
+"Directly behind the runner"
+],correct:"Inside half of the ball carrier"},
+
+{type:"Concept",category:"Spill vs Box",prompt:"Which pairing is correct?",scenario:"You are comparing on-ball vs off-ball rules.",choices:[
+"Off ball box, LOS wrong arm",
+"Off ball wrong arm, LOS box",
+"Off ball spill, LOS box",
+"Off ball alley, LOS spill"
+],correct:"Off ball box, LOS wrong arm"},
+
+{type:"Reaction",category:"Second Puller",prompt:"After wrong-arming, what is your next job?",scenario:"You have closed the gap and turned vertical.",choices:[
+"Take out the second puller",
+"Loop outside and contain",
+"Cross the runner’s face",
+"Peel off and chase QB"
+],correct:"Take out the second puller"},
+
+{type:"Mistake ID",category:"On the LOS",prompt:"What is the major mistake after wrong-arm?",scenario:"You continue past your fit after contact.",choices:[
+"Running past the gap",
+"Staying square too long",
+"Not using hands",
+"Reading late"
+],correct:"Running past the gap"},
+
+{type:"Recognition",category:"Power",prompt:"What does a kick-out indicate?",scenario:"You see a puller coming to your side.",choices:[
+"Edge is about to be attacked",
+"Play is pass-action",
+"Ball is going inside",
+"Safety becomes force"
+],correct:"Edge is about to be attacked"},
+
+{type:"Reaction",category:"Edge Control",prompt:"What is your job on the edge?",scenario:"The runner is approaching outside leverage.",choices:[
+"Set the edge and force inside",
+"Avoid contact and stay clean",
+"Widen everything outside",
+"Cross face and make play"
+],correct:"Set the edge and force inside"},
+
+{type:"Concept",category:"Scrape Window",prompt:"Why box from depth instead of spill?",scenario:"You are off the ball reading power.",choices:[
+"To keep edge for inside fit",
+"To create more bounce space",
+"To avoid all contact",
+"To force help outside"
+],correct:"To keep edge for inside fit"},
+
+{type:"Reaction",category:"Backside",prompt:"Away from power flow, what is your job?",scenario:"You are not the primary edge player.",choices:[
+"Squeeze and box",
+"Wrong arm frontside",
+"Run the alley fast",
+"Press inside gap"
+],correct:"Squeeze and box"},
+
+{type:"Reaction",category:"Power Weak",prompt:"When power comes weak, what must you maintain?",scenario:"You are now part of the edge fit.",choices:[
+"Edge control and leverage",
+"Immediate inside chase",
+"Always wrong arm",
+"Give ground and wait"
+],correct:"Edge control and leverage"},
+
+{type:"Decision",category:"Coaching Point",prompt:"What best summarizes winning the edge?",scenario:"A player keeps widening the run lane.",choices:[
+"Beat the block and stay tight",
+"Get deeper than the runner",
+"Avoid contact when possible",
+"Attack the first thing you see"
+],correct:"Beat the block and stay tight"}
+
+];
 
     const startScreen = document.getElementById("startScreen");
     const gameScreen = document.getElementById("gameScreen");
